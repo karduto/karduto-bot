@@ -1,0 +1,13 @@
+{
+  "name": "karduto-bot",
+  "private": true,
+  "type": "module",
+  "description": "Publica automáticamente las historias y el post de tasa de Karduto (datos reales de api.karduto.com) vía Metricool",
+  "scripts": {
+    "preview": "node src/run.mjs --dry --preview",
+    "dry": "node src/run.mjs --dry"
+  },
+  "dependencies": {
+    "playwright": "^1.63.0"
+  }
+}

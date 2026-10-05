@@ -1,0 +1,75 @@
+name: Publicaciones de tasa Karduto
+
+on:
+  schedule:
+    # Cada hora al minuto 7 (hora UTC). El script decide por la HORA DE CHILE si toca publicar,
+    # así que no importa el cambio de horario de verano/invierno.
+    - cron: "7 10-19 * * *"
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "vista-previa = genera todas las plantillas (no publica) · check = prueba el token de Metricool · publicar = publica de verdad"
+        type: choice
+        options: [vista-previa, check, publicar]
+        default: vista-previa
+      hora:
+        description: "(opcional) forzar hora de Chile 0-23, solo para modo publicar"
+        required: false
+      fecha:
+        description: "(opcional) forzar fecha AAAA-MM-DD, solo para pruebas"
+        required: false
+
+concurrency:
+  group: karduto-bot
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Identidad de git para guardar las imágenes
+        run: |
+          git config user.name "karduto-bot"
+          git config user.email "karduto-bot@users.noreply.github.com"
+
+      - name: Ejecutar
+        env:
+          METRICOOL_TOKEN: ${{ secrets.METRICOOL_TOKEN }}
+          METRICOOL_USER_ID: ${{ secrets.METRICOOL_USER_ID }}
+          METRICOOL_BLOG_ID: ${{ secrets.METRICOOL_BLOG_ID }}
+          MODO: ${{ inputs.modo || 'publicar' }}
+          FORCE_HOUR: ${{ inputs.hora }}
+          FORCE_DATE: ${{ inputs.fecha }}
+        run: |
+          case "$MODO" in
+            vista-previa) node src/run.mjs --dry --preview ;;
+            check)        node src/run.mjs --check ;;
+            *)            node src/run.mjs ;;
+          esac
+
+      - name: Guardar las imágenes de la vista previa
+        if: ${{ inputs.modo == 'vista-previa' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: vista-previa
+          path: preview/

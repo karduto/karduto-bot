@@ -1,0 +1,105 @@
+/* ============================================================
+   karduto-social · kit-story.css — sistema visual de Stories (1080x1920)
+   Reusa tokens de marca (kit.css) pero con layouts propios de Story:
+   full-bleed vertical, card de mensaje, CTA pill, K isotype, emoji 3D.
+   ============================================================ */
+@font-face { font-family: "Poppins"; src: url("assets/fonts/Poppins-ExtraBold.ttf") format("truetype"); font-weight: 800; }
+@font-face { font-family: "Poppins"; src: url("assets/fonts/Poppins-Bold.ttf")      format("truetype"); font-weight: 700; }
+@font-face { font-family: "Poppins"; src: url("assets/fonts/Poppins-SemiBold.ttf")  format("truetype"); font-weight: 600; }
+@font-face { font-family: "Poppins"; src: url("assets/fonts/Poppins-Medium.ttf")    format("truetype"); font-weight: 500; }
+
+:root {
+  --morado: #4A37FE;
+  --azul:   #030357;
+  --mango:  #FDBB4A;
+  --celeste:#56CBFF;
+  --violeta:#AE25FD;
+  --fresa:  #F92257;
+  --perla:  #E7E1DC;
+  --blanco: #FFFFFF;
+  --ink-soft: rgba(255,255,255,0.82);
+  --font: "Poppins", "Arial", sans-serif;
+  --pad: 84px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:1080px; height:1920px; overflow:hidden; background:var(--azul); font-family:var(--font); }
+#root { position:relative; width:1080px; height:1920px; }
+
+/* ---- Fondos ---- */
+.s-bg-grad  { position:absolute; inset:0; background: linear-gradient(160deg, var(--morado) 0%, #2a1fc9 45%, var(--azul) 100%); }
+.s-bg-azul  { position:absolute; inset:0; background: var(--azul); }
+.s-bg-morado{ position:absolute; inset:0; background: linear-gradient(165deg, #5b49ff 0%, var(--morado) 55%, #2f22c0 100%); }
+.s-arc { position:absolute; left:50%; bottom:-260px; width:1400px; height:1400px; transform:translateX(-50%);
+         border-radius:50%; background: radial-gradient(circle at 50% 35%, #170f7a 0%, #0a0640 70%); opacity:.9; }
+.s-dots { position:absolute; inset:0; opacity:.09;
+          background-image: radial-gradient(rgba(255,255,255,.9) 2px, transparent 2px);
+          background-size: 46px 46px; }
+/* franja/cuña diagonal tipo "wave" para variar fondo solid */
+.s-wedge { position:absolute; left:-10%; right:-10%; height:640px;
+           background: linear-gradient(120deg, var(--morado), var(--violeta));
+           transform: rotate(-6deg); }
+
+/* ---- Logo ---- */
+.s-k { position:absolute; }
+.s-k img { display:block; height:100%; width:auto; }
+.s-k.app img { border-radius:26%; }
+
+/* ---- Top status pill (hora / kicker) ---- */
+.s-kicker { display:inline-flex; align-items:center; gap:14px; font-weight:700; font-size:30px;
+            letter-spacing:.12em; text-transform:uppercase; color:var(--mango); }
+.s-dot-live { width:16px; height:16px; border-radius:50%; background:#3CE07A; box-shadow:0 0 0 6px rgba(60,224,122,.25); }
+
+/* ---- Tipografía ---- */
+.s-h1  { font-weight:800; font-size:92px;  line-height:1.05; letter-spacing:-.02em; color:#fff; }
+.s-h1 .hl { color: var(--mango); }
+.s-h2  { font-weight:800; font-size:68px;  line-height:1.08; letter-spacing:-.015em; color:#fff; }
+.s-h2 .hl { color: var(--mango); }
+.s-lead{ font-weight:500; font-size:42px; line-height:1.35; color: var(--ink-soft); }
+.s-body{ font-weight:500; font-size:38px; line-height:1.42; color: var(--ink-soft); }
+.s-tiny{ font-weight:600; font-size:28px; letter-spacing:.02em; color: rgba(255,255,255,.7); }
+
+/* ---- Emoji grande (estilo "3D") ---- */
+.s-emoji { font-size:200px; line-height:1; filter: drop-shadow(0 18px 30px rgba(0,0,0,.35)); }
+.s-emoji.lg { font-size:260px; }
+
+/* ---- Card de mensaje ---- */
+.s-card { background: rgba(3,3,87,.62); backdrop-filter: blur(2px); border-radius:40px;
+          padding:56px 60px; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+.s-card.light { background: rgba(255,255,255,.96); }
+.s-card.light .s-h2, .s-card.light .s-body { color: var(--azul); }
+.s-card.light .s-h2 .hl { color:#B5720A; }
+
+/* ---- Tag chip (FAQ / dato / etiqueta corta) ---- */
+.s-tag { display:inline-block; background: rgba(255,255,255,.14); color:#fff; font-weight:700; font-size:28px;
+         letter-spacing:.08em; text-transform:uppercase; padding:14px 30px; border-radius:999px; }
+.s-tag.on-light { background: rgba(3,3,87,.08); color: var(--azul); }
+
+/* ---- CTA pill ---- */
+.s-cta { display:inline-flex; align-items:center; gap:18px; background: var(--mango); color: var(--azul);
+         font-weight:800; font-size:38px; letter-spacing:.01em; padding:30px 52px; border-radius:999px;
+         box-shadow: 0 16px 40px rgba(0,0,0,.3); }
+.s-cta svg { width:36px; height:36px; }
+.s-cta.ghost { background: rgba(255,255,255,.14); color:#fff; border:3px solid rgba(255,255,255,.55); }
+
+/* ---- Pasos / checklist ---- */
+.s-steps { display:flex; flex-direction:column; gap:30px; }
+.s-step  { display:flex; align-items:center; gap:26px; }
+.s-step .n { width:72px; height:72px; min-width:72px; border-radius:50%; background:var(--mango); color:var(--azul);
+             font-weight:800; font-size:36px; display:flex; align-items:center; justify-content:center; }
+.s-step .t { font-weight:600; font-size:38px; color:#fff; }
+
+/* ---- Footer ---- */
+.s-foot { position:absolute; left:var(--pad); right:var(--pad); bottom:80px; display:flex; align-items:center;
+          justify-content:space-between; color: rgba(255,255,255,.72); font-weight:600; font-size:28px; }
+
+/* ---- Barras de progreso de Story (decorativas, tipo IG) ---- */
+.s-progress { position:absolute; left:var(--pad); right:var(--pad); top:56px; display:flex; gap:10px; }
+.s-progress i { flex:1; height:6px; border-radius:6px; background: rgba(255,255,255,.3); }
+.s-progress i.on { background:#fff; }
+
+/* ---- Foto lifestyle full-bleed ---- */
+.s-photo { position:absolute; inset:0; width:1080px; height:1920px; object-fit:cover; }
+.s-photo-scrim-b { position:absolute; left:0; right:0; bottom:0; height:1100px;
+   background: linear-gradient(to top, var(--azul) 10%, rgba(3,3,87,.85) 40%, rgba(3,3,87,0) 100%); }
+.s-photo-tint { position:absolute; inset:0; background: linear-gradient(180deg, rgba(74,55,254,.15), rgba(3,3,87,.35)); mix-blend-mode:multiply; }
