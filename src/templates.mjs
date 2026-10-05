@@ -2,10 +2,32 @@
 const f = (n, d = 0) => n.toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d });
 
 export const CORRIDORS = {
-  BS: { from: "CLP", to: "BS", unit: "Bs", label: "Chile → Venezuela", short: "Venezuela", base: 1 },
-  PE: { from: "CLP", to: "PEN", unit: "PEN", label: "Chile → Perú", short: "Perú", base: 1000 },
-  CO: { from: "CLP", to: "COP", unit: "COP", label: "Chile → Colombia", short: "Colombia", base: 1 },
+  BS: { from: "CLP", to: "BS", unit: "Bs", label: "Chile → Venezuela", short: "Venezuela", base: 1, flag: "VE" },
+  PE: { from: "CLP", to: "PEN", unit: "PEN", label: "Chile → Perú", short: "Perú", base: 1000, flag: "PE" },
+  CO: { from: "CLP", to: "COP", unit: "COP", label: "Chile → Colombia", short: "Colombia", base: 1, flag: "CO" },
 };
+
+// ---------- banderas circulares (vectoriales, nítidas a cualquier tamaño) ----------
+let _fid = 0;
+const star = (cx, cy, R, r, fill) => {
+  const pts = Array.from({ length: 10 }, (_, i) => {
+    const a = (-90 + i * 36) * (Math.PI / 180), rad = i % 2 ? r : R;
+    return `${(cx + rad * Math.cos(a)).toFixed(2)},${(cy + rad * Math.sin(a)).toFixed(2)}`;
+  }).join(" ");
+  return `<polygon points="${pts}" fill="${fill}"/>`;
+};
+const FLAGS = {
+  CL: { dx: 0, svg: `<rect width="150" height="50" fill="#fff"/><rect y="50" width="150" height="50" fill="#D52B1E"/><rect width="50" height="50" fill="#0039A6"/>${star(25, 25, 14, 5.6, "#fff")}` },
+  VE: { dx: -25, svg: `<rect width="150" height="33.4" fill="#FFCC00"/><rect y="33.4" width="150" height="33.3" fill="#00247D"/><rect y="66.7" width="150" height="33.3" fill="#CF142B"/>${Array.from({ length: 8 }, (_, i) => { const a = (-155 + i * (130 / 7)) * (Math.PI / 180); return star(75 + 28 * Math.cos(a), 72 + 28 * Math.sin(a), 3.6, 1.5, "#fff"); }).join("")}` },
+  PE: { dx: -25, svg: `<rect width="50" height="100" fill="#D91023"/><rect x="50" width="50" height="100" fill="#fff"/><rect x="100" width="50" height="100" fill="#D91023"/>` },
+  CO: { dx: -25, svg: `<rect width="150" height="50" fill="#FCD116"/><rect y="50" width="150" height="25" fill="#003893"/><rect y="75" width="150" height="25" fill="#CE1126"/>` },
+};
+const flag = (code, size) => {
+  const id = "fc" + _fid++, fl = FLAGS[code];
+  return `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))"><defs><clipPath id="${id}"><circle cx="50" cy="50" r="50"/></clipPath></defs><g clip-path="url(#${id})" transform="translate(${fl.dx},0)">${fl.svg}</g><circle cx="50" cy="50" r="48.5" fill="none" stroke="#fff" stroke-width="3.5"/></svg>`;
+};
+const flagsRow = (c, size) =>
+  `<span style="display:inline-flex;align-items:center;gap:${Math.round(size * 0.22)}px;vertical-align:middle">${flag("CL", size)}<svg viewBox="0 0 24 24" width="${Math.round(size * 0.5)}" height="${Math.round(size * 0.5)}"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>${flag(c.flag, size)}</span>`;
 
 const rateFmt = (c, v) => (c.base === 1000 ? f(v * 1000, 2) : f(v, 4));
 const unitRate = (c, cur) => (c.base === 1000 ? `1.000 CLP = ${f(cur * 1000, 2)} ${c.unit}` : `1 CLP = ${f(cur, 4)} ${c.unit}`);
@@ -63,7 +85,8 @@ function t1(x) {
   <div style="position:absolute;right:60px;top:110px;transform:rotate(5deg);background:#030357;color:#FDBB4A;font-weight:800;font-size:46px;padding:20px 34px;border-radius:26px;box-shadow:0 14px 34px rgba(0,0,0,.3);">¡Mira la tasa!</div>
   <div style="position:absolute;left:0;right:0;top:880px;bottom:0;background:linear-gradient(180deg,#1a14b8,#030357 55%);border-radius:80px 80px 0 0;box-shadow:0 -24px 70px rgba(0,0,0,.4);"></div>
   <div style="position:absolute;left:50%;top:800px;transform:translateX(-50%) rotate(-3deg);background:#FDBB4A;color:#030357;font-weight:800;font-size:58px;padding:22px 46px;border-radius:999px;white-space:nowrap;box-shadow:0 16px 40px rgba(0,0,0,.35);">${unitRate(c, x.cur)}</div>
-  <div style="position:absolute;left:70px;right:70px;top:960px;text-align:center;">
+  <div style="position:absolute;left:70px;right:70px;top:940px;text-align:center;">
+    <div style="margin-bottom:12px;">${flagsRow(c, 64)}</div>
     <div class="s-kicker" style="font-size:28px;">${dot}Tasa de las ${x.hh} · ${c.label}</div>
     <div class="s-lead" style="margin-top:20px;color:#fff;font-weight:600;font-size:40px;">Si envías <b>10.000 CLP</b>, tu contacto recibe</div>
     <div style="font-weight:800;font-size:110px;color:var(--mango);letter-spacing:-.02em;line-height:1.1;margin-top:4px;">${conv(x, 10000)} ${c.unit}</div>
@@ -82,7 +105,7 @@ function t2(x) {
   ${K("iso-white", "s-k", "left:70px;top:96px;height:78px;")}
   <img src="assets/photos/${x.photo}" style="position:absolute;right:64px;top:90px;width:340px;height:430px;object-fit:cover;object-position:50% 25%;border-radius:40px;border:9px solid #fff;transform:rotate(4deg);box-shadow:0 20px 50px rgba(0,0,0,.4);">
   <div style="position:absolute;left:70px;top:300px;width:560px;">
-    <div class="s-kicker" style="font-size:26px;">${dot}Tasa de las ${x.hh}</div>
+    <div style="display:flex;align-items:center;gap:18px;">${flagsRow(c, 54)}<span class="s-kicker" style="font-size:26px;">Tasa de las ${x.hh}</span></div>
     <div class="s-h1" style="margin-top:20px;">Así va<br><span class="hl">la tasa hoy</span></div>
   </div>
   <div style="position:absolute;left:56px;right:56px;top:600px;background:rgba(3,3,87,.62);border-radius:44px;padding:30px 36px 24px;box-shadow:0 24px 60px rgba(0,0,0,.35);">
@@ -108,7 +131,7 @@ function tableStory(x, { tag, line1, line2, ctaText, tip }) {
   <img src="assets/photos/${x.photo}" style="position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover;object-position:50% 20%;">
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(74,55,254,.32),rgba(3,3,87,.5) 40%,rgba(3,3,87,.97) 76%);"></div>
   ${K("iso-white", "s-k", "top:96px;left:50%;transform:translateX(-50%);height:78px;")}
-  <div style="position:absolute;top:230px;left:70px;right:70px;text-align:center;"><span class="s-tag">${tag}</span></div>
+  <div style="position:absolute;top:230px;left:70px;right:70px;text-align:center;"><span class="s-tag" style="display:inline-flex;align-items:center;gap:16px;padding:10px 28px 10px 14px;font-size:26px;">${flagsRow(c, 48)}<span>${tag}</span></span></div>
   <div style="position:absolute;top:380px;left:70px;right:70px;text-align:center;"><div class="s-h1">${line1}<br>${line2}</div></div>
   <div style="position:absolute;left:60px;right:60px;top:890px;background:rgba(255,255,255,.96);border-radius:44px;padding:14px 44px;box-shadow:0 24px 60px rgba(0,0,0,.4);">
     ${rows.map((m, i) => `<div style="display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;${i < 2 ? "border-bottom:3px solid #E7E1DC;" : ""}"><span style="font-weight:600;font-size:40px;color:#030357;">${f(m)} CLP</span><span style="font-weight:800;font-size:50px;color:#4A37FE;">${conv(x, m)} ${c.unit}</span></div>`).join("")}
@@ -149,7 +172,7 @@ export function buildFeed(x) {
   <div style="position:absolute;left:0;right:0;top:560px;bottom:0;background:linear-gradient(180deg,#1a14b8,#030357 50%);border-radius:70px 70px 0 0;"></div>
   <div style="position:absolute;left:50%;top:500px;transform:translateX(-50%) rotate(-3deg);background:#FDBB4A;color:#030357;font-weight:800;font-size:54px;padding:18px 40px;border-radius:999px;white-space:nowrap;box-shadow:0 14px 36px rgba(0,0,0,.35);">${unitRate(c, x.cur)}</div>
   <div style="position:absolute;left:80px;right:80px;top:664px;">
-    <div class="kicker" style="font-size:26px;">${dot}${c.label} · se actualiza cada hora</div>
+    <div style="display:flex;align-items:center;gap:18px;">${flagsRow(c, 56)}<span class="kicker" style="font-size:26px;">${c.label} · se actualiza cada hora</span></div>
     <div class="lead" style="margin-top:10px;color:#fff;font-weight:600;font-size:38px;">Si envías <b>10.000 CLP</b>, tu contacto recibe</div>
     <div style="font-weight:800;font-size:100px;color:var(--mango);letter-spacing:-.02em;line-height:1.1;">${conv(x, 10000)} ${c.unit}</div>
     <div style="margin-top:12px;">${chart(x, 920, 190, { dotR: 10, stroke: 6, labels: false })}</div>

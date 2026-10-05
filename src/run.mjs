@@ -113,6 +113,7 @@ async function main() {
   if (slotIndex < 0) { console.log(`Hora local ${now.h}: no hay publicación programada para esta hora.`); return; }
   if (!forced && now.mi > cfg.maxLateMinutes) { console.log(`Llegué tarde (minuto ${now.mi}). Salto esta hora para no desordenar.`); return; }
   const slot = cfg.slots[slotIndex];
+  if (!DRY && !process.env.METRICOOL_TOKEN) { console.log("Aún no hay METRICOOL_TOKEN configurado: el bot está en pausa (no genera ni publica nada)."); return; }
   const key = `${now.date}_${pad(slot.hour)}`;
   const statePath = "state/published.json";
   const state = fs.existsSync(statePath) ? JSON.parse(fs.readFileSync(statePath, "utf8")) : {};
