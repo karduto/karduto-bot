@@ -202,6 +202,7 @@ const STORIES_W1 = [
   { date: "2026-10-10", at: "15:00", id: "ci", html: sCierre({ kicker: "Última hora", big: "16:00", h: `Hoy atendemos hasta las 16:00`, sub: "Lo que ingreses después se procesa el siguiente día operativo.", emoji: "⏳" }) },
   // domingo 11
   { date: "2026-10-11", at: "10:00", id: "dom", html: sCierre({ kicker: "Domingo", emoji: "🌙", h: `Hoy no operamos`, sub: "Mañana lunes 12, feriado, atendemos. Te esperamos desde las 8:30." }) },
+  { date: "2026-10-11", at: "19:00", id: "dom2", html: sCierre({ kicker: "Aviso de feriado", emoji: "🗓️", h: `El lunes 12 trabajamos con normalidad`, sub: "Aunque sea feriado, atendemos como cualquier lunes. Te esperamos desde las 8:30.", cta: "IR A KARDUTO.COM" }) },
 ];
 
 const FEED_W1 = [
