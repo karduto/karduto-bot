@@ -2,9 +2,13 @@ name: Publicaciones de tasa Karduto
 
 on:
   schedule:
-    # Cada hora al minuto 7 (hora UTC). El script decide por la HORA DE CHILE si toca publicar,
+    # Varios intentos por hora (minutos 2, 12, 24 y 36 UTC): GitHub atrasa los cron entre 10 y 25 min, y el primero que llegue publica;
+    # los demás salen en 1 segundo sin hacer nada. El script decide por la HORA DE CHILE si toca publicar,
     # así que no importa el cambio de horario de verano/invierno.
-    - cron: "7 10-19 * * *"
+    - cron: "2 10-19 * * *"
+    - cron: "12 10-19 * * *"
+    - cron: "24 10-19 * * *"
+    - cron: "36 10-19 * * *"
   workflow_dispatch:
     inputs:
       modo:
@@ -33,26 +37,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: ¿Hay algo que publicar a esta hora?
+        id: chk
+        env:
+          EVENT: ${{ github.event_name }}
+          METRICOOL_TOKEN: ${{ secrets.METRICOOL_TOKEN }}
+        run: node src/should-run.mjs
+
       - uses: actions/setup-node@v4
+        if: steps.chk.outputs.go == 'true'
         with:
           node-version: 22
           cache: npm
 
       - run: npm ci
+        if: steps.chk.outputs.go == 'true'
 
       - uses: actions/cache@v4
+        if: steps.chk.outputs.go == 'true'
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ hashFiles('package-lock.json') }}
 
       - run: npx playwright install --with-deps chromium
+        if: steps.chk.outputs.go == 'true'
 
       - name: Identidad de git para guardar las imágenes
+        if: steps.chk.outputs.go == 'true'
         run: |
           git config user.name "karduto-bot"
           git config user.email "karduto-bot@users.noreply.github.com"
 
       - name: Ejecutar
+        if: steps.chk.outputs.go == 'true'
         env:
           METRICOOL_TOKEN: ${{ secrets.METRICOOL_TOKEN }}
           METRICOOL_USER_ID: ${{ secrets.METRICOOL_USER_ID }}
