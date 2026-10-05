@@ -182,7 +182,7 @@ export const STORIES = [
   ci("2026-10-15", "19:00", "celeste", { kicker: "Recordatorio", big: "20:00", h: `Hoy atendemos hasta las 20:00`, sub: "Cotiza en karduto.com cuando quieras.", cta: "IR A KARDUTO.COM" }),
   // vie 16
   ap("2026-10-16", "mango", { photo: "s_mujer_lentes_cardigan.jpg", pos: "50% 22%", kicker: "Viernes · ya estamos atendiendo", h: `Viernes: envía <span class="hl">con calma</span>`, sub: "Hoy atendemos hasta las 20:00." }),
-  ut("2026-10-16", "15:00", "mango", { kicker: "Tu comprobante", h: `Comprobante <span class="hl">completo y legible</span>`, bg: "s-bg-morado", icon: "🧾", items: ["Monto, fecha y destino visibles", "Uno por cada envío", "Súbelo en la solicitud correcta"], cta: "HACER UN ENVÍO" }),
+  ut("2026-10-16", "15:00", "mango", { kicker: "Tu comprobante", h: `Comprobante <span class="hl">completo y legible</span>`, bg: "s-bg-morado", icon: "🧾", items: ["Monto, fecha y destino visibles", "Puedes subir varios: JPG, JPEG o PDF", "Súbelo en la solicitud correcta"], cta: "HACER UN ENVÍO" }),
   ci("2026-10-16", "19:00", "mango", { kicker: "Fin de semana", emoji: "📅", h: `Mañana sábado atendemos hasta las 16:00`, sub: "El domingo no operamos. El lunes volvemos desde las 8:30." }),
   // sáb 17
   ap("2026-10-17", "calabaza", { photo: "s_mujer_rizos_sonrie.jpg", pos: "50% 22%", kicker: "Sábado · ya estamos atendiendo", h: `Sábado de envíos, <span class="hl">hasta las 16:00</span>`, sub: "Hoy atendemos de 8:30 a 16:00." }),

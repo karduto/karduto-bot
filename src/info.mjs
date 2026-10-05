@@ -9,6 +9,9 @@ export function hoursNote(weekday, hour) {
 
 const TIPS = [
   "sube tu comprobante completo: monto, fecha y destino bien visibles.",
+  "todo se puede hacer desde tu teléfono: cotiza, transfiere y sube tu comprobante.",
+  "puedes subir varios comprobantes, en JPG, JPEG o PDF.",
+  "tenemos más corredores: revisa karduto.com para ver todos.",
   "revisa el número de cuenta del destinatario antes de enviar.",
   "sigue tu envío: Inicio, En proceso y Finalizado.",
   "guarda a tu destinatario y tu próximo envío será más simple de armar.",

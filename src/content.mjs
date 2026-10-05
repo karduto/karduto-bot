@@ -89,9 +89,9 @@ export const D02 = (() => {
     coverPhoto({ photo: "f_preocupada_celular.jpg", pos: "50% 30%", chipText: "ANTES DE TRANSFERIR", h1: `4 razones por las que un envío <span class="hl">se detiene</span>`, lead: "Las 4 se evitan antes de transferir." }),
     infoSlide({ n: 1, total: T, title: `Monto que <span class="hl">no coincide</span>`, cards: errCards("Transferir un monto distinto al que indica tu solicitud.", "Revisa que el monto transferido sea exactamente el de tu solicitud.") }),
     infoSlide({ n: 2, total: T, title: `Depósito <span class="hl">no encontrado</span>`, color: "azul", cards: errCards("El pago no aparece en la cuenta de Karduto: transferencia incompleta o hecha a otra cuenta.", "Transfiere a la cuenta que muestra tu solicitud y confirma que tu banco la dejó completada.") }),
-    infoSlide({ n: 3, total: T, title: `Comprobante <span class="hl">duplicado</span>`, cards: errCards("Subir el mismo comprobante en más de una solicitud.", "Sube un comprobante distinto por cada envío.") }),
+    infoSlide({ n: 3, total: T, title: `Comprobante <span class="hl">duplicado</span>`, cards: errCards("Subir el mismo comprobante en más de una solicitud.", "No repitas el mismo comprobante en dos envíos. Puedes subir varios.") }),
     infoSlide({ n: 4, total: T, title: `Comprobante <span class="hl">no encontrado</span>`, color: "azul", cards: errCards("El archivo no se ve completo o no se puede leer.", "Sube el comprobante completo y legible, en la solicitud que corresponde.") }),
-    checkSlide({ photo: "f_hombre_texteando.jpg", pos: "50% 30%", kicker: "Checklist", title: `Antes de <span class="hl">transferir</span>`, items: ["Monto exacto de la solicitud", "Cuenta correcta", "Un comprobante por envío", "Comprobante completo y legible"], cta: "Guárdalo para tu próximo envío", ctaSub: "Cotiza en karduto.com · link en la bio", n: 6, total: 6 }),
+    checkSlide({ photo: "f_hombre_texteando.jpg", pos: "50% 30%", kicker: "Checklist", title: `Antes de <span class="hl">transferir</span>`, items: ["Monto exacto de la solicitud", "Cuenta correcta", "Sin repetir comprobantes entre envíos", "Comprobante completo y legible"], cta: "Guárdalo para tu próximo envío", ctaSub: "Cotiza en karduto.com · link en la bio", n: 6, total: 6 }),
   ];
 })();
 
@@ -197,7 +197,7 @@ const STORIES_W1 = [
   { date: "2026-10-05", at: "19:00", id: "ci", html: sCierre({ kicker: "Recordatorio", big: "20:00", h: `Atendemos hasta las 20:00`, sub: "Lo que ingreses después se procesa el siguiente día operativo desde las 8:30." }) },
   // martes 6
   { date: "2026-10-06", at: "08:35", id: "ap", html: sApertura({ photo: "tasa_sorpresa_amarillo.jpg", pos: "50% 10%", kicker: "Martes · ya estamos atendiendo", h: `Buen día. <span class="hl">Aquí estamos</span>`, sub: "Atendemos hasta las 20:00." }) },
-  { date: "2026-10-06", at: "15:00", id: "ut", html: sUtilidad({ kicker: "Antes de transferir", h: `Revisa esto <span class="hl">antes de pagar</span>`, icon: "✅", items: ["El monto es exactamente el de tu solicitud", "Transfiere a la cuenta que muestra tu solicitud", "Sube un comprobante por envío"], cta: "COTIZAR AHORA" }) },
+  { date: "2026-10-06", at: "15:00", id: "ut", html: sUtilidad({ kicker: "Antes de transferir", h: `Revisa esto <span class="hl">antes de pagar</span>`, icon: "✅", items: ["El monto es exactamente el de tu solicitud", "Transfiere a la cuenta que muestra tu solicitud", "Sube tu comprobante (puedes subir varios)"], cta: "COTIZAR AHORA" }) },
   { date: "2026-10-06", at: "19:00", id: "ci", html: sCierre({ kicker: "Recordatorio", big: "20:00", h: `Hoy atendemos hasta las 20:00`, sub: "Cotiza en karduto.com cuando quieras.", cta: "IR A KARDUTO.COM" }) },
   // miércoles 7
   { date: "2026-10-07", at: "08:35", id: "ap", html: sApertura({ photo: "tasa_hombre_alegre.jpg", pos: "60% 30%", kicker: "Miércoles · ya estamos atendiendo", h: `Mitad de semana, <span class="hl">tu familia en mente</span>`, sub: "Hoy atendemos hasta las 20:00." }) },
@@ -209,7 +209,7 @@ const STORIES_W1 = [
   { date: "2026-10-08", at: "19:00", id: "ci", html: sCierre({ kicker: "Recordatorio", big: "20:00", h: `Hoy atendemos hasta las 20:00`, sub: "Cotiza en karduto.com cuando quieras.", cta: "IR A KARDUTO.COM" }) },
   // viernes 9
   { date: "2026-10-09", at: "08:35", id: "ap", html: sApertura({ photo: "tasa_mujer_celular.jpg", pos: "50% 25%", kicker: "Viernes · ya estamos atendiendo", h: `Viernes de envíos <span class="hl">con tiempo</span>`, sub: "Hoy atendemos hasta las 20:00." }) },
-  { date: "2026-10-09", at: "15:00", id: "ut", html: sUtilidad({ kicker: "Tu comprobante", h: `Sube tu comprobante <span class="hl">completo y legible</span>`, bg: "s-bg-morado", icon: "🧾", items: ["Que se vean todos los datos", "Uno por cada envío", "En la solicitud que corresponde"], cta: "HACER UN ENVÍO" }) },
+  { date: "2026-10-09", at: "15:00", id: "ut", html: sUtilidad({ kicker: "Tu comprobante", h: `Sube tu comprobante <span class="hl">completo y legible</span>`, bg: "s-bg-morado", icon: "🧾", items: ["Que se vean todos los datos", "Puedes subir varios: JPG, JPEG o PDF", "En la solicitud que corresponde"], cta: "HACER UN ENVÍO" }) },
   { date: "2026-10-09", at: "19:00", id: "ci", html: sCierre({ kicker: "Fin de semana", emoji: "📅", h: `Mañana sábado atendemos hasta las 16:00`, sub: "El domingo no operamos. El lunes 12, feriado, también atendemos." }) },
   // sábado 10
   { date: "2026-10-10", at: "08:35", id: "ap", html: sApertura({ photo: "tasa_hombre_alegre.jpg", pos: "60% 30%", kicker: "Sábado · ya estamos atendiendo", h: `Sábado de envíos, <span class="hl">hasta las 16:00</span>`, sub: "Hoy atendemos de 8:30 a 16:00." }) },
