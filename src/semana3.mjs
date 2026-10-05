@@ -5,7 +5,7 @@ const label = (t, c = "#FDBB4A") => `<div style="font-weight:800;font-size:26px;
 
 // ---------- día 16 · mar 20 oct 10:00 · estático · comprobante bien vs mal ----------
 const receipt = (bad) => `<div style="background:#fff;border-radius:28px;padding:26px 26px 22px;box-shadow:0 18px 44px rgba(0,0,0,.35);width:100%;height:560px;overflow:hidden;position:relative;">
-  <div style="font-weight:800;font-size:24px;color:#030357;">Banco Ejemplo</div>
+  <img src="assets/logos/bancoestado.png" style="height:34px;display:block;">
   <div style="font-weight:600;font-size:20px;color:#6b6b8a;margin-top:2px;">Comprobante de transferencia</div>
   <div style="height:3px;background:#E7E1DC;margin:14px 0;"></div>
   ${[["Monto", "$100.000"], ["Fecha", "06/10/2026 10:42"], ["Destino", "Cuenta ****1234"], ["N° operación", "00123456"]].map(([a, b], i) => `<div style="display:flex;justify-content:space-between;padding:9px 0;font-size:23px;${bad && i < 2 ? "filter:blur(7px);opacity:.7;" : ""}"><span style="color:#6b6b8a;font-weight:600;">${a}</span><span style="color:#030357;font-weight:800;">${b}</span></div>`).join("")}
@@ -14,7 +14,7 @@ const receipt = (bad) => `<div style="background:#fff;border-radius:28px;padding
 const D16 = applyTheme(feedPage(`
   <div class="bg-azul"></div><div class="dots"></div>
   ${K("iso-white", "k-iso", "top:56px;left:70px;height:84px;")}
-  <img src="${ph("f_mujer_boleta.jpg")}" style="position:absolute;right:64px;top:50px;width:210px;height:210px;object-fit:cover;object-position:50% 25%;border-radius:50%;border:8px solid #fff;box-shadow:0 14px 34px rgba(0,0,0,.4);">
+  <div style="position:absolute;right:50px;top:40px;width:230px;height:230px;border-radius:50%;background:#fff;border:8px solid #fff;box-shadow:0 14px 34px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;"><img src="assets/logos/bancoestado.png" style="width:190px;height:auto;"></div>
   <div style="position:absolute;left:70px;right:300px;top:170px;"><div class="kicker" style="font-size:24px;">Antes de subirlo</div><div class="h2" style="font-size:54px;margin-top:10px;">Así se ve un comprobante que <span class="hl">pasa a la primera</span></div></div>
   <div style="position:absolute;left:50px;right:50px;top:420px;display:flex;gap:30px;">
     <div style="flex:1;">${receipt(false)}<div style="margin-top:22px;display:flex;align-items:center;gap:14px;"><div style="width:56px;height:56px;border-radius:50%;background:#3CE07A;color:#030357;font-weight:800;font-size:36px;display:flex;align-items:center;justify-content:center;">✓</div><div style="font-weight:800;font-size:30px;color:#fff;">Completo y legible</div></div></div>
@@ -40,8 +40,8 @@ const D17 = (() => {
   return [
     coverPhoto({ photo: "f_revisa_documentos.jpg", pos: "50% 30%", chipText: "TU ENVÍO, POR DENTRO", h1: `Qué hacemos con tu dinero <span class="hl">desde que transfieres</span> hasta que llega`, lead: "El proceso de control, paso a paso." }),
     stepTl({ n: 1, total: T, cur: 1, icon: "🧾", title: `Tú transfieres y <span class="hl">subes tu comprobante</span>`, text: "Haces la transferencia por el monto de tu solicitud y subes el comprobante completo." }),
-    stepTl({ n: 2, total: T, cur: 2, icon: "👩‍💻", bg: "bg-azul", title: `Una persona <span class="hl">verifica tu depósito</span>`, text: "Alguien de nuestro equipo revisa que el pago coincida con tu solicitud." }),
-    stepTl({ n: 3, total: T, cur: 3, icon: "✅", title: `Se aprueba <span class="hl">antes de pagar</span>`, text: "La operación se aprueba antes de enviar el pago a tu familia." }),
+    stepTl({ n: 2, total: T, cur: 2, icon: "🤖", bg: "bg-azul", title: `El sistema <span class="hl">verifica tu depósito</span>`, text: "De manera automática, el sistema comprueba que tu pago coincida con tu solicitud." }),
+    stepTl({ n: 3, total: T, cur: 3, icon: "✅", title: `Si todo está ok, <span class="hl">se aprueba</span>`, text: "Si el sistema detecta que todo está correcto, aprueba tu envío y pasa a la siguiente etapa." }),
     stepTl({ n: 4, total: T, cur: 4, icon: "📩", bg: "bg-azul", title: `Te avisamos <span class="hl">por email</span> en cada cambio`, text: "Inicio, En proceso y Finalizado: cada cambio de estado llega a tu correo." }),
     stepTl({ n: 5, total: T, cur: 5, icon: "🛠️", title: `Si algo no cuadra, <span class="hl">te avisamos</span>`, text: "Te escribimos para que lo corrijas, y tu envío sigue su camino." }),
     feedPage(`
@@ -68,8 +68,8 @@ const D19 = applyTheme(feedPage(`
     <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.14);border-radius:34px;padding:26px 40px;"><span style="font-weight:800;font-size:44px;color:#fff;">Sábado</span><span style="font-weight:800;font-size:60px;color:#fff;">hasta 16:00</span></div>
     <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(3,3,87,.6);border:3px solid rgba(255,255,255,.3);border-radius:34px;padding:22px 40px;"><span style="font-weight:800;font-size:40px;color:#fff;">Domingo</span><span style="font-weight:700;font-size:44px;color:#fff;">cerrado</span></div>
   </div>
-  <div style="position:absolute;left:70px;right:70px;top:1062px;"><div class="lead" style="font-size:30px;">Lo ingresado fuera de horario se procesa el siguiente día operativo.</div></div>
-  <div style="position:absolute;left:70px;bottom:96px;">${pill("Envía hoy · karduto.com", "#FDBB4A", "#030357", "font-size:34px;")}</div>
+  <div style="position:absolute;left:70px;right:70px;top:1040px;"><div class="lead" style="font-size:28px;">Fuera de horario: se procesa el siguiente día operativo.</div></div>
+  <div style="position:absolute;left:70px;bottom:150px;">${pill("Envía hoy · karduto.com", "#FDBB4A", "#030357", "font-size:34px;")}</div>
   <div class="foot"><span>@karduto</span><span>Link en la bio</span></div>`), "mango");
 
 // ---------- día 20 · sáb 24 oct 10:00 · carrusel · 3 mitos ----------
@@ -91,7 +91,7 @@ const D20 = (() => {
   const T = 5;
   return [
     coverPhoto({ photo: "f_hombre_esceptico.jpg", pos: "50% 25%", chipText: "MITO O REALIDAD", h1: `3 mitos que te frenan para enviar por una <span class="hl">plataforma web</span>`, lead: "Y lo que pasa de verdad." }),
-    mito({ n: 1, total: T, num: 1, mito: "Es complicado", real: "Son pocos pasos: cotizas, transfieres y subes tu comprobante." }),
+    mito({ n: 1, total: T, num: 1, mito: "Es complicado", real: "Son pocos pasos y todo se puede hacer desde tu teléfono: cotizas, transfieres y subes tu comprobante." }),
     mito({ n: 2, total: T, num: 2, mito: "No voy a saber dónde está mi plata", real: "Ves el estado de tu envío: Inicio, En proceso y Finalizado." }),
     mito({ n: 3, total: T, num: 3, mito: "Si me equivoco, pierdo el envío", real: "Si algo se puede corregir, te llega un correo y lo corriges." }),
     checkSlide({ photo: "", kicker: "Ahora sí", title: `Pruébalo <span class="hl">tú mismo</span>`, items: ["Cotiza y ve el monto antes de pagar", "Sigue el estado de tu envío", "Corrige si hace falta"], cta: "Cotiza en karduto.com", ctaSub: "Link en la bio · guárdalo", n: 5, total: 5 }),
@@ -117,8 +117,8 @@ export const STORIES = [
   ap("2026-10-20", "mango", { photo: "s_hombre_camisa_floral.jpg", pos: "50% 22%", kicker: "Martes · ya estamos atendiendo", h: `Un comprobante completo <span class="hl">pasa a la primera</span>`, sub: "Hoy atendemos hasta las 20:00." }),
   ut("2026-10-20", "15:00", "mango", { kicker: "Tu comprobante", h: `Que se vea <span class="hl">todo</span>`, bg: "s-bg-morado", icon: "🧾", items: ["El monto", "La fecha", "El destino"], cta: "HACER UN ENVÍO" }),
   ci("2026-10-20", "19:00", "mango", { kicker: "Recordatorio", big: "20:00", h: `Hoy atendemos hasta las 20:00`, sub: "Cotiza en karduto.com cuando quieras.", cta: "IR A KARDUTO.COM" }),
-  ap("2026-10-21", "calabaza", { photo: "s_mujer_blanco.jpg", pos: "50% 18%", kicker: "Miércoles · ya estamos atendiendo", h: `Una persona <span class="hl">revisa tu envío</span>`, sub: "Hoy atendemos hasta las 20:00." }),
-  ut("2026-10-21", "15:00", "calabaza", { kicker: "Tu envío por dentro", h: `Qué pasa <span class="hl">con tu envío</span>`, icon: "🔎", items: ["Verificamos tu depósito", "Se aprueba antes de pagar", "Te avisamos por email en cada cambio"], cta: "HACER UN ENVÍO" }),
+  ap("2026-10-21", "calabaza", { photo: "s_mujer_blanco.jpg", pos: "50% 18%", kicker: "Miércoles · ya estamos atendiendo", h: `Un sistema <span class="hl">verifica tu envío</span>`, sub: "Hoy atendemos hasta las 20:00." }),
+  ut("2026-10-21", "15:00", "calabaza", { kicker: "Tu envío por dentro", h: `Qué pasa <span class="hl">con tu envío</span>`, icon: "🔎", items: ["El sistema verifica tu depósito de forma automática", "Si todo está ok, se aprueba y pasa a la siguiente etapa", "Te avisamos por email en cada cambio"], cta: "HACER UN ENVÍO" }),
   ci("2026-10-21", "19:00", "calabaza", REC),
   ap("2026-10-22", "celeste", { photo: "s_hombre_caminando.jpg", pos: "50% 30%", kicker: "Jueves · ya estamos atendiendo", h: `Tu envío es como <span class="hl">una encomienda</span>`, sub: "Hoy atendemos hasta las 20:00." }),
   ut("2026-10-22", "15:00", "celeste", { kicker: "Sigue tu envío", h: `Revisa el <span class="hl">estado</span> en la web`, icon: "📦", items: ["Inicio: creaste la solicitud", "En proceso: se está revisando", "Finalizado: listo"], cta: "SEGUIR MI ENVÍO" }),
@@ -127,7 +127,7 @@ export const STORIES = [
   ut("2026-10-23", "15:00", "mango", { kicker: "Horario de cierre", h: `Esto es lo que <span class="hl">tienes que saber</span>`, bg: "s-bg-morado", icon: "⏰", items: ["Hoy, hasta las 20:00", "Sábado, hasta las 16:00", "Domingo, cerrado"], cta: "ENVIAR HOY" }),
   ci("2026-10-23", "19:00", "mango", { kicker: "Fin de semana", emoji: "📅", h: `Mañana sábado atendemos hasta las 16:00`, sub: "El domingo no operamos. El lunes volvemos desde las 8:30." }),
   ap("2026-10-24", "calabaza", { photo: "s_mujer_cafe.jpg", pos: "50% 22%", kicker: "Sábado · ya estamos atendiendo", h: `Sábado de envíos, <span class="hl">hasta las 16:00</span>`, sub: "Hoy atendemos de 8:30 a 16:00." }),
-  ut("2026-10-24", "12:30", "calabaza", { kicker: "Mitos y realidades", h: `Enviar por la web <span class="hl">no es complicado</span>`, icon: "💡", items: ["Son pocos pasos", "Ves el estado de tu envío", "Si algo se corrige, te avisamos por correo"], cta: "COTIZAR AHORA" }),
+  ut("2026-10-24", "12:30", "calabaza", { kicker: "Mitos y realidades", h: `Enviar por la web <span class="hl">no es complicado</span>`, icon: "💡", items: ["Son pocos pasos", "Todo se puede hacer desde tu teléfono", "Ves el estado de tu envío"], cta: "COTIZAR AHORA" }),
   ci("2026-10-24", "15:00", "calabaza", { kicker: "Última hora", big: "16:00", h: `Hoy atendemos hasta las 16:00`, sub: "Lo que ingreses después pasa al siguiente día operativo.", emoji: "⏳" }),
   { date: "2026-10-25", at: "10:00", id: "dom", html: applyTheme(sCierre({ kicker: "Domingo", emoji: "🌙", h: `Hoy no operamos`, sub: "Mañana lunes volvemos desde las 8:30." }), "celeste") },
 ];

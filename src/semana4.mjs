@@ -20,7 +20,7 @@ const D22 = applyTheme(feedPage(`
     ${col("B", "#F66220", "#FFFFFF", "🙈", "El que espera que le pregunten")}
     ${col("C", "#AE25FD", "#FFFFFF", "📸", "El que manda captura de cada paso")}
   </div>
-  <div style="position:absolute;left:70px;bottom:120px;">${pill("Etiqueta a tu C 👇", "#FDBB4A", "#030357", "font-size:36px;")}</div>
+  <div style="position:absolute;left:70px;bottom:140px;">${pill("Etiqueta a tu C 👇", "#FDBB4A", "#030357", "font-size:36px;")}</div>
   <div class="foot"><span>@karduto</span><span>karduto.com</span></div>`), "celeste");
 
 // ---------- día 23 · mar 27 oct 10:00 · carrusel 6 · el envío del mes en 4 pasos ----------
@@ -31,11 +31,12 @@ const mock = {
     <div style="color:rgba(255,255,255,.7);font-weight:600;font-size:22px;margin-top:20px;">Tu familia recibe</div><div style="background:#FDBB4A;border-radius:20px;padding:14px 18px;color:#030357;font-weight:800;font-size:34px;margin-top:6px;">El monto, a la vista</div>
     <div style="margin-top:22px;background:#4A37FE;color:#fff;font-weight:800;font-size:26px;text-align:center;padding:16px;border-radius:999px;">Continuar</div>`),
   transferir: phone(`<div style="color:#FDBB4A;font-weight:800;font-size:22px;letter-spacing:.1em;text-transform:uppercase;">Datos para transferir</div>
-    ${[["Banco", "Banco Ejemplo"], ["Cuenta", "****1234"], ["Monto exacto", "$100.000"]].map(([a, b]) => `<div style="display:flex;justify-content:space-between;padding:16px 0;border-bottom:2px solid rgba(255,255,255,.14);font-size:27px;"><span style="color:rgba(255,255,255,.7);font-weight:600;">${a}</span><span style="color:#fff;font-weight:800;">${b}</span></div>`).join("")}
+    ${[["Banco", "<img src=\"assets/logos/bancoestado.png\" style=\"height:32px;display:block;background:#fff;border-radius:8px;padding:5px 8px;\">"], ["Cuenta", "****1234"], ["Monto exacto", "$100.000"]].map(([a, b]) => `<div style="display:flex;justify-content:space-between;padding:16px 0;border-bottom:2px solid rgba(255,255,255,.14);font-size:27px;"><span style="color:rgba(255,255,255,.7);font-weight:600;">${a}</span><span style="color:#fff;font-weight:800;">${b}</span></div>`).join("")}
     <div style="margin-top:22px;color:rgba(255,255,255,.65);font-weight:500;font-size:20px;">Datos de ejemplo.</div>`),
-  comprobante: phone(`<div style="color:#FDBB4A;font-weight:800;font-size:22px;letter-spacing:.1em;text-transform:uppercase;">Sube tu comprobante</div>
-    <div style="margin-top:20px;border:4px dashed rgba(255,255,255,.4);border-radius:28px;padding:44px 20px;text-align:center;color:#fff;font-weight:700;font-size:28px;">Arrastra o toca aquí</div>
-    <div style="margin-top:22px;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.12);border-radius:20px;padding:16px 20px;"><div style="width:44px;height:44px;border-radius:50%;background:#3CE07A;color:#030357;font-weight:800;font-size:28px;display:flex;align-items:center;justify-content:center;">✓</div><div style="color:#fff;font-weight:700;font-size:25px;">comprobante.jpg</div></div>`),
+  comprobante: phone(`<div style="color:#FDBB4A;font-weight:800;font-size:22px;letter-spacing:.1em;text-transform:uppercase;">Sube tus comprobantes</div>
+    <div style="margin-top:18px;border:4px dashed rgba(255,255,255,.4);border-radius:28px;padding:30px 20px;text-align:center;color:#fff;font-weight:700;font-size:26px;">Arrastra o toca aquí</div>
+    <div style="margin-top:12px;text-align:center;color:rgba(255,255,255,.75);font-weight:700;font-size:22px;">Formatos: JPG · JPEG · PDF</div>
+    ${["comprobante-1.jpg", "comprobante-2.pdf"].map((f) => `<div style="margin-top:14px;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.12);border-radius:20px;padding:14px 18px;"><div style="width:40px;height:40px;border-radius:50%;background:#3CE07A;color:#030357;font-weight:800;font-size:26px;display:flex;align-items:center;justify-content:center;">✓</div><div style="color:#fff;font-weight:700;font-size:24px;">${f}</div></div>`).join("")}`),
   estado: phone(`<div style="color:#FDBB4A;font-weight:800;font-size:22px;letter-spacing:.1em;text-transform:uppercase;">Estado de tu envío</div>
     ${[["Inicio", true], ["En proceso", true], ["Finalizado", false]].map(([a, on], i) => `<div style="display:flex;align-items:center;gap:16px;margin-top:20px;"><div style="width:48px;height:48px;border-radius:50%;background:${on ? (i === 1 ? "#FDBB4A" : "#3CE07A") : "rgba(255,255,255,.18)"};color:#030357;font-weight:800;font-size:28px;display:flex;align-items:center;justify-content:center;">${on ? "✓" : ""}</div><div style="font-weight:${on ? 800 : 600};font-size:30px;color:${on ? "#fff" : "rgba(255,255,255,.55)"};">${a}</div></div>`).join("")}`),
 };
@@ -53,13 +54,13 @@ const D23 = (() => {
     coverPhoto({ photo: "f_mujer_sueldo.jpg", pos: "50% 25%", chipText: "LLEGÓ EL SUELDO", h1: `Tu envío del mes <span class="hl">en 4 pasos</span>`, lead: "Cotizar, transferir, subir el comprobante y seguir el estado." }),
     stepPhone({ n: 1, total: T, step: 1, title: `<span class="hl">Cotiza</span>`, text: "Elige el corredor, escribe el monto y mira cuánto recibe tu familia.", screen: mock.cotizar }),
     stepPhone({ n: 2, total: T, step: 2, title: `<span class="hl">Transfiere</span>`, text: "Haz la transferencia por el monto exacto de tu solicitud.", screen: mock.transferir }),
-    stepPhone({ n: 3, total: T, step: 3, title: `Sube tu <span class="hl">comprobante</span>`, text: "Completo y legible, en la solicitud que corresponde.", screen: mock.comprobante }),
+    stepPhone({ n: 3, total: T, step: 3, title: `Sube tu <span class="hl">comprobante</span>`, text: "Puedes subir varios comprobantes. Aceptamos imágenes JPG, JPEG y archivos PDF.", screen: mock.comprobante }),
     stepPhone({ n: 4, total: T, step: 4, title: `Sigue el <span class="hl">estado</span>`, text: "Inicio, En proceso y Finalizado, siempre a la vista.", screen: mock.estado }),
     feedPage(`
   <div class="bg-azul"></div><div class="dots"></div>${K("iso-white", "k-iso", "top:64px;right:70px;height:100px;")}
-  <div style="position:absolute;left:96px;right:96px;top:170px;"><div class="kicker" style="font-size:28px;">Corredores disponibles</div><div class="h2" style="font-size:62px;margin-top:14px;">Elige el tuyo y <span class="hl">cotiza</span></div></div>
-  <div style="position:absolute;left:96px;right:96px;top:420px;display:flex;flex-direction:column;gap:16px;">${corr("CL", "VE")}${corr("CL", "PE")}${corr("CL", "CO")}${corr("PE", "VE")}${corr("CO", "VE")}</div>
-  <div style="position:absolute;left:96px;bottom:130px;">${pill("Cotiza en karduto.com", "#FDBB4A", "#030357", "font-size:34px;")}<div class="tiny" style="margin-top:14px;">Link en la bio</div></div>
+  <div style="position:absolute;left:96px;right:96px;top:170px;"><div class="kicker" style="font-size:28px;">Corredores disponibles</div><div class="h2" style="font-size:62px;margin-top:14px;">Elige el tuyo y <span class="hl">cotiza</span></div><div class="lead" style="font-size:30px;margin-top:12px;">¡Y tenemos más corredores! Revisa nuestra página web.</div></div>
+  <div style="position:absolute;left:96px;right:96px;top:440px;display:flex;flex-direction:column;gap:10px;">${corr("CL", "VE")}${corr("CL", "PE")}${corr("CL", "CO")}${corr("PE", "VE")}${corr("CO", "VE")}<div style="text-align:center;font-weight:800;font-size:34px;color:#FDBB4A;margin-top:6px;">+ más corredores en karduto.com</div></div>
+  <div style="position:absolute;left:96px;bottom:120px;">${pill("Cotiza en karduto.com", "#FDBB4A", "#030357", "font-size:34px;")}<div class="tiny" style="margin-top:14px;">Link en la bio</div></div>
   <div class="foot"><span>6 de ${T}</span><span>karduto.com</span></div>`),
   ].map((h) => applyTheme(h, "mango"));
 })();
@@ -80,7 +81,7 @@ const D25 = applyTheme(feedPage(`
     ${day("Vie", "30", true, "8:30 – 20:00", "")}${day("Sáb", "31", true, "8:30 – 16:00", "Feriado: abierto", true)}${day("Dom", "1", false, "Cerrado", "Como todo domingo")}${day("Lun", "2", true, "8:30 – 20:00", "Festivo en Colombia: abierto")}
   </div>
   <div style="position:absolute;left:70px;right:70px;top:1010px;"><div class="lead" style="font-size:32px;">Lo ingresado fuera de horario se procesa el siguiente día operativo.</div></div>
-  <div style="position:absolute;left:70px;bottom:110px;">${pill("Cotiza en karduto.com", "#FDBB4A", "#030357", "font-size:34px;")}</div>
+  <div style="position:absolute;left:70px;bottom:150px;">${pill("Cotiza en karduto.com", "#FDBB4A", "#030357", "font-size:34px;")}</div>
   <div class="foot"><span>@karduto</span><span>Link en la bio</span></div>`), "mango");
 
 // ---------- día 26 · vie 30 oct 10:00 · carrusel 5 · checklist ----------
@@ -94,7 +95,7 @@ const D26 = (() => {
     coverPhoto({ photo: "f_mujer_cafe_checklist.jpg", pos: "50% 25%", chipText: "FIN DE SEMANA LARGO", h1: `Checklist antes del finde largo: <span class="hl">envía hoy sin sorpresas</span>`, lead: "4 chequeos y listo." }),
     infoSlide({ n: 1, total: T, title: `Monto <span class="hl">exacto</span>`, cards: rev("Que el monto transferido sea el de tu solicitud.", "Un monto distinto detiene el envío.") }),
     infoSlide({ n: 2, total: T, title: `Datos del <span class="hl">destinatario</span>`, color: "azul", cards: rev("Cuenta o teléfono y cédula, dígito por dígito.", "Un número mal escrito hace que el pago vuelva.") }),
-    infoSlide({ n: 3, total: T, title: `Comprobante <span class="hl">completo</span>`, cards: rev("Monto, fecha y destino visibles, y un comprobante por envío.", "Un comprobante recortado o duplicado se rechaza.") }),
+    infoSlide({ n: 3, total: T, title: `Comprobante <span class="hl">completo</span>`, cards: rev("Monto, fecha y destino visibles. Puedes subir varios comprobantes.", "Un comprobante recortado o duplicado se rechaza.") }),
     checkSlide({ photo: "", kicker: "Antes del cierre", title: `Tu check <span class="hl">de hoy</span>`, items: ["Monto exacto", "Datos del destinatario", "Comprobante completo", "Horario de hoy: hasta las 20:00"], cta: "Envía antes del cierre", ctaSub: "Cotiza en karduto.com · link en la bio", n: 5, total: T }),
   ].map((h) => applyTheme(h, "mango"));
 })();
@@ -108,7 +109,7 @@ const D28 = applyTheme(feedPage(`
     <div class="h1" style="font-size:76px;">Lo que mandas <span class="hl">no es plata</span>.</div>
     <div class="lead" style="margin-top:24px;color:#fff;font-size:40px;">Es el mercado de la semana, la matrícula, el remedio.</div>
   </div>
-  <div style="position:absolute;left:80px;bottom:110px;">${pill("Envía confianza. Recibe tranquilidad.", "#FDBB4A", "#030357", "font-size:32px;")}</div>
+  <div style="position:absolute;left:80px;bottom:140px;">${pill("Envía confianza. Recibe tranquilidad.", "#FDBB4A", "#030357", "font-size:32px;")}</div>
   <div class="foot"><span>@karduto</span><span>Foto: Pixabay</span></div>`), "mango");
 
 export const FEED = [
@@ -158,6 +159,6 @@ export const STORIES = [
   ci("2026-11-02", "19:00", "mango", REC),
   // mar 3 nov
   ap("2026-11-03", "celeste", { photo: "s_mujer_abrigo.jpg", pos: "50% 22%", kicker: "Martes · ya estamos atendiendo", h: `3 razones para <span class="hl">probar Karduto</span>`, sub: "Hoy atendemos hasta las 20:00." }),
-  ut("2026-11-03", "15:00", "celeste", { kicker: "Pruébalo este mes", h: `Tres razones <span class="hl">para enviar</span>`, icon: "👍", items: ["Ves el monto antes de pagar", "Ves el estado de tu envío", "Personas revisan cada operación"], cta: "COTIZAR AHORA" }),
+  ut("2026-11-03", "15:00", "celeste", { kicker: "Pruébalo este mes", h: `Tres razones <span class="hl">para enviar</span>`, icon: "👍", items: ["Ves el monto antes de pagar", "Ves el estado de tu envío", "Un sistema automático verifica tu envío"], cta: "COTIZAR AHORA" }),
   ci("2026-11-03", "19:00", "celeste", REC2),
 ];

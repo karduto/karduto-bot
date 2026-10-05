@@ -70,29 +70,29 @@ Las fechas de entrega dejan 1 o 2 días para que yo edite. Si no llegas, avísam
 ## R06 · "Esto pasa del otro lado cuando subes tu comprobante"
 
 - **Publica:** sábado 10 de octubre, 10:00 · **Duración final:** 25 a 35 s · **Pilar:** Generar confianza
-- **Formato:** detrás de cámaras en el set, con voz en off. Hace visible el control humano.
-- **Personas:** 1 persona del equipo (la que revisa comprobantes) y quien dice la voz en off (puede ser la misma persona o Francisco).
+- **Formato:** detrás de cámaras en el set, con voz en off. Hace visible el control: el sistema verifica cada operación de forma automática.
+- **Personas:** 1 persona del equipo (mostrando el sistema en pantalla) y quien dice la voz en off (puede ser la misma persona o Francisco).
 - **Lugar y utilería:** escritorio con computador, taza de café, cuaderno. Todo con luz cálida.
 - **Regla importante:** que en pantalla NO se vea ningún dato real de clientes. Usa un comprobante de ejemplo o pantalla desenfocada.
 
 **Guion de voz en off (léelo en voz tranquila, sin apuro):**
 
-"Esto pasa del otro lado cuando subes tu comprobante. Una persona de nuestro equipo revisa que el monto, la fecha y el destino coincidan con tu solicitud. Si algo no cuadra, te avisamos por correo para que lo corrijas. Si está todo bien, tu envío avanza al estado En proceso. Hay una persona revisando cada operación. Karduto: envía confianza."
+"Esto pasa del otro lado cuando subes tu comprobante. El sistema verifica de manera automática que el monto, la fecha y el destino coincidan con tu solicitud. Si algo no cuadra, te avisamos por correo para que lo corrijas. Si todo está ok, tu envío se aprueba y pasa a la siguiente etapa. Karduto: envía confianza."
 
 **Escenas y tomas**
 
 | # | Tiempo | Toma | Texto en pantalla |
 |---|---|---|---|
 | 1 | 0–4 s | Plano general del escritorio con luz cálida. Nadie habla. Entra la mano a tomar el mouse. | "Esto pasa del otro lado" |
-| 2 | 4–10 s | Plano de manos escribiendo y moviendo el mouse. Pantalla desenfocada al fondo. | "Subes tu comprobante" |
-| 3 | 10–18 s | Plano detalle: un dedo señala en pantalla (con comprobante de ejemplo) el monto, la fecha y el destino. Hazlo despacio, uno por uno. | "Se revisa monto, fecha y destino" |
-| 4 | 18–24 s | Plano medio de la persona asintiendo y marcando "ok" con el mouse. Sonríe levemente a cámara. | "Si algo no cuadra, te avisamos por correo" |
-| 5 | 24–30 s | Primer plano de la persona mirando a cámara con una media sonrisa. | "Una persona revisa cada operación" |
+| 2 | 4–10 s | Plano de manos subiendo el comprobante en la pantalla (cuenta de prueba). | "Subes tu comprobante" |
+| 3 | 10–18 s | Plano detalle: un dedo señala en pantalla (con comprobante de ejemplo) el monto, la fecha y el destino. Hazlo despacio, uno por uno. | "El sistema verifica monto, fecha y destino" |
+| 4 | 18–24 s | Plano de la pantalla: aparece el estado de la verificación en verde ("ok"). La persona sonríe levemente a cámara. | "Si algo no cuadra, te avisamos por correo" |
+| 5 | 24–30 s | Primer plano de la persona mirando a cámara con una media sonrisa. | "Si todo está ok, se aprueba y avanza" |
 | 6 | 30–35 s | Logo Karduto sobre fondo azul (lo pongo yo). | "Envía confianza. Recibe tranquilidad." |
 
 **Audio:** voz en off + música muy suave instrumental. Graba la voz aparte, en un lugar silencioso, pegando el celular a 20 cm de la boca.
 
-**Texto sugerido para publicar:** "Detrás de cada envío hay personas. Así se revisa tu comprobante en Karduto. 👀 #Karduto #EnvíaConfianza #Remesas"
+**Texto sugerido para publicar:** "Así se verifica tu comprobante en Karduto, de forma automática. 👀 #Karduto #EnvíaConfianza #Remesas"
 
 ---
 
@@ -293,7 +293,7 @@ Las fechas de entrega dejan 1 o 2 días para que yo edite. Si no llegas, avísam
 
 **Guion hablado:**
 
-"¿Todavía no has enviado con Karduto? Estas son tres razones para probar este mes. Una: ves cuánto recibe tu familia antes de pagar. Dos: ves el estado de tu envío: Inicio, En proceso y Finalizado. Tres: hay personas revisando cada operación. Cotiza en karduto.com. Link en la bio."
+"¿Todavía no has enviado con Karduto? Estas son tres razones para probar este mes. Una: ves cuánto recibe tu familia antes de pagar. Dos: ves el estado de tu envío: Inicio, En proceso y Finalizado. Tres: un sistema automático verifica cada operación. Cotiza en karduto.com. Link en la bio."
 
 **Escenas y tomas**
 
@@ -302,7 +302,7 @@ Las fechas de entrega dejan 1 o 2 días para que yo edite. Si no llegas, avísam
 | 1 | 0–4 s | Gancho a cámara. | "¿Aún no has enviado con Karduto?" |
 | 2 | 4–10 s | Primera razón, levantando un dedo. | "1 · Ves el monto antes de pagar" |
 | 3 | 10–16 s | Segunda razón, dos dedos. Corte rápido a la pantalla del estado. | "2 · Ves el estado de tu envío" |
-| 4 | 16–22 s | Tercera razón, tres dedos. | "3 · Personas revisan cada operación" |
+| 4 | 16–22 s | Tercera razón, tres dedos (un sistema automático verifica tu envío). | "3 · Un sistema verifica tu envío" |
 | 5 | 22–30 s | Cierre a cámara. Señalas hacia abajo. | "Cotiza en karduto.com · link en la bio" |
 
 **Texto sugerido para publicar:** "3 razones para probar Karduto este mes 👇 Cotiza en karduto.com (link en la bio). #Karduto #Remesas #EnvíaConfianza"
