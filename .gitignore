@@ -3,3 +3,4 @@ page.html
 preview/
 .DS_Store
 demos/
+src/_sheet.mjs

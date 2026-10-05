@@ -27,7 +27,7 @@ const FLAGS = {
   PE: { dx: -25, svg: `<rect width="50" height="100" fill="#D91023"/><rect x="50" width="50" height="100" fill="#fff"/><rect x="100" width="50" height="100" fill="#D91023"/>` },
   CO: { dx: -25, svg: `<rect width="150" height="50" fill="#FCD116"/><rect y="50" width="150" height="25" fill="#003893"/><rect y="75" width="150" height="25" fill="#CE1126"/>` },
 };
-const flag = (code, size) => {
+export const flag = (code, size) => {
   const id = "fc" + _fid++, fl = FLAGS[code];
   // el recorte (clip) va en un <g> exterior sin transformar; el desplazamiento va en un <g> interior
   return `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))"><defs><clipPath id="${id}"><circle cx="50" cy="50" r="50"/></clipPath></defs><g clip-path="url(#${id})"><g transform="translate(${fl.dx},0)">${fl.svg}</g></g><circle cx="50" cy="50" r="48.5" fill="none" stroke="#fff" stroke-width="3.5"/></svg>`;
