@@ -142,9 +142,18 @@ async function main() {
   for (const f of files) {
     const url = rawUrl(f.file);
     await waitPublic(url);
-    const p = await createPost({ imageUrl: url, type: f.kind, when, timezone: TZ, text: f.text || "" });
-    result[f.kind.toLowerCase()] = p.id ?? "ok";
-    summary(`✅ Programado ${f.kind} (${slot.corridor}, tasa de las ${x.hh}: ${x.cur}) para ${when} · id Metricool ${p.id}`);
+    // Instagram es lo esencial; Facebook y TikTok se intentan aparte para que un fallo no bloquee a Instagram
+    const nets = (cfg.networks?.[f.kind === "STORY" ? "story" : "post"] ?? ["instagram"]);
+    for (const network of nets) {
+      try {
+        const p = await createPost({ imageUrl: url, type: f.kind, when, timezone: TZ, text: f.text || "", network });
+        result[`${f.kind.toLowerCase()}_${network}`] = p.id ?? "ok";
+        summary(`✅ Programado ${f.kind} en ${network} (${slot.corridor}, tasa de las ${x.hh}: ${x.cur}) para ${when} · id Metricool ${p.id}`);
+      } catch (e) {
+        if (network === "instagram") throw e;
+        summary(`⚠️ ${f.kind} en ${network} no se pudo programar: ${e.message.slice(0, 300)}`);
+      }
+    }
   }
   state[key] = { ...result, at: new Date().toISOString() };
   fs.mkdirSync("state", { recursive: true });

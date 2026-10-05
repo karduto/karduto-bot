@@ -67,5 +67,16 @@
       "violeta-electrico",
       "blanco-limpio"
     ]
+  },
+  "networks": {
+    "story": [
+      "instagram",
+      "facebook"
+    ],
+    "post": [
+      "instagram",
+      "facebook",
+      "tiktok"
+    ]
   }
 }

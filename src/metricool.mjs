@@ -34,20 +34,24 @@ export async function normalizeImage(url) {
   }
 }
 
-export async function createPost({ imageUrl, type, when, timezone, text = "", draft = false }) {
+export async function createPost({ imageUrl, type, when, timezone, text = "", draft = false, network = "instagram", title = "" }) {
   const media = await normalizeImage(imageUrl);
+  // datos propios de cada red: type = STORY | POST
+  const netData = network === "instagram" ? { instagramData: { type, autoPublish: !draft, showReelOnFeed: true, isAiGenerated: false } }
+    : network === "facebook" ? { facebookData: { type } }
+    : { tiktokData: { title: title || text.split("\n")[0].slice(0, 90), autoAddMusic: true, privacyOption: "PUBLIC_TO_EVERYONE" } };
   const body = {
     publicationDate: { dateTime: when, timezone },
     text,
     firstCommentText: "",
-    providers: [{ network: "instagram" }],
+    providers: [{ network }],
     media: [media],
     mediaAltText: [],
     autoPublish: !draft,
     draft,
     shortener: false,
     saveExternalMediaFiles: false,
-    instagramData: { type, autoPublish: !draft, showReelOnFeed: true, isAiGenerated: false },
+    ...netData,
   };
   const r = await mc("/v2/scheduler/posts", { method: "POST", body });
   const post = r?.data ?? r;
