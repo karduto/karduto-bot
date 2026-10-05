@@ -48,13 +48,13 @@ export const THEMES = {
     scrim: `linear-gradient(180deg,rgba(174,37,253,.4),rgba(3,3,87,.55) 40%,rgba(3,3,87,.97) 76%)`,
     acc: C.celeste, accInk: C.azul, hAcc: C.celeste, hCta: C.celeste, hCtaInk: C.azul, chip: C.celeste, chipInk: C.azul, stk: C.celeste, stkInk: C.azul, cta: C.celeste, ctaInk: C.azul,
     line: C.celeste, glass: "rgba(86,203,255,.1)", statHiBg: C.celeste, statHiInk: C.azul, tagBg: "rgba(86,203,255,.2)",
-    badgeBd: C.celeste, cardNum: C.violeta,
+    badgeBd: C.celeste,
   }),
   "violeta-electrico": theme("Violeta eléctrico · violeta + morado + mango", {
     bg: `linear-gradient(160deg,${C.violeta} 0%,${C.morado} 55%,${C.azul} 125%)`,
     panel: `linear-gradient(180deg,#7a2bf0,#1a0f9c 50%,${C.azul})`,
     scrim: `linear-gradient(180deg,rgba(174,37,253,.5),rgba(74,55,254,.45) 40%,rgba(3,3,87,.97) 78%)`,
-    glass: "rgba(3,3,87,.55)", cardNum: C.violeta, tagBg: "rgba(255,255,255,.18)",
+    glass: "rgba(3,3,87,.55)", tagBg: "rgba(255,255,255,.18)",
   }),
   "fresa-pop": theme("Fresa pop · azul + fresa + blanco", {
     bg: `radial-gradient(circle at 12% 8%,rgba(249,34,87,.6),transparent 46%),radial-gradient(circle at 95% 55%,rgba(74,55,254,.5),transparent 50%),linear-gradient(170deg,${C.azul},#0a0a6e)`,
@@ -62,7 +62,7 @@ export const THEMES = {
     scrim: `linear-gradient(180deg,rgba(249,34,87,.32),rgba(3,3,87,.55) 40%,rgba(3,3,87,.97) 78%)`,
     acc: "#fff", accInk: C.fresa, chip: C.fresa, chipInk: "#fff", stk: C.fresa, stkInk: "#fff", cta: C.fresa, ctaInk: "#fff",
     pAcc: C.mango, pCta: C.fresa, pCtaInk: "#fff", hAcc: C.mango, hCta: C.fresa, hCtaInk: "#fff", line: C.fresa, glass: "rgba(255,255,255,.07)",
-    statHiBg: C.fresa, statHiInk: "#fff", tagBg: "rgba(249,34,87,.28)", cardNum: C.fresa, badgeBd: C.mango,
+    statHiBg: C.fresa, statHiInk: "#fff", tagBg: "rgba(249,34,87,.28)", badgeBd: C.mango,
   }),
   "calabaza-fuego": theme("Calabaza fuego · calabaza + fresa + azul", {
     bg: `linear-gradient(160deg,${C.calabaza} 0%,${C.fresa} 130%)`,
@@ -72,7 +72,14 @@ export const THEMES = {
     chip: C.azul, chipInk: C.mango, stk: C.azul, stkInk: C.mango, cta: C.azul, ctaInk: "#fff",
     pAcc: C.mango, pCta: C.mango, pCtaInk: C.azul, line: C.mango, glass: "rgba(3,3,87,.9)",
     statBg: "rgba(3,3,87,.25)", statInk: "#fff", statHiBg: C.azul, statHiInk: C.mango, tagBg: "rgba(3,3,87,.35)",
-    badgeBg: "rgba(3,3,87,.35)", badgeBd: C.mango, cardNum: C.calabaza, dots: 0.12,
+    badgeBg: "rgba(3,3,87,.35)", badgeBd: C.mango, dots: 0.12,
+  }),
+  "azul-calabaza": theme("Azul profundo + calabaza (acento)", {
+    bg: `radial-gradient(circle at 90% 8%,rgba(246,98,32,.45),transparent 42%),linear-gradient(170deg,${C.azul} 0%,#0b0a86 75%,${C.morado} 140%)`,
+    panel: `linear-gradient(180deg,#14127f,${C.azul} 60%)`,
+    acc: C.calabaza, accInk: "#fff", hAcc: C.calabaza, pAcc: C.calabaza, chip: C.calabaza, chipInk: "#fff", stk: C.calabaza, stkInk: "#fff",
+    cta: C.calabaza, ctaInk: "#fff", pCta: C.calabaza, pCtaInk: "#fff", hCta: C.calabaza, hCtaInk: "#fff", line: C.calabaza,
+    glass: "rgba(255,255,255,.07)", statHiBg: C.calabaza, statHiInk: "#fff", tagBg: "rgba(246,98,32,.28)",
   }),
   "perla-editorial": theme("Perla editorial · perla + morado + calabaza", {
     bg: C.perla, decor: blob(C.mango, 700, -140, 520, 0.95) + blob(C.calabaza, -200, -250, 360, 0.95),

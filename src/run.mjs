@@ -53,6 +53,8 @@ async function buildContext(slot, slotIndex) {
   const photos = slot.template === "c1" ? PHOTOS.c1[code] : PHOTOS[slot.template];
   return {
     ...data, cor,
+    theme: pick(cfg.themes?.[slot.template] ?? ["clasico"], dayOfYear + slotIndex),
+    themeFeed: pick(cfg.themes?.feed ?? ["clasico"], dayOfYear),
     photo: pick(photos, dayOfYear + slotIndex),
     photoFeed: pick(PHOTOS.t1, dayOfYear),
     tip: tipFor(dayOfYear, slotIndex),
@@ -106,7 +108,7 @@ async function main() {
       const x = await buildContext(slot, i);
       const name = `preview/${pad(slot.hour)}_${slot.corridor}_${slot.template}`;
       await renderPage(buildStory(slot.template, x), { width: 1080, height: 1920, out: `${name}_story.jpg` });
-      if (slot.alsoFeed) await renderPage(buildFeed(x), { width: 1080, height: 1350, out: `${name}_feed.jpg` });
+      if (slot.alsoFeed) await renderPage(buildFeed({ ...x, theme: x.themeFeed }), { width: 1080, height: 1350, out: `${name}_feed.jpg` });
       console.log("preview", name);
     }
     return;
@@ -128,7 +130,7 @@ async function main() {
   const files = [{ kind: "STORY", file: storyFile }];
   if (slot.alsoFeed) {
     const feedFile = `${key}_${slot.corridor}_feed.jpg`;
-    await renderPage(buildFeed(x), { width: 1080, height: 1350, out: path.join("out", feedFile) });
+    await renderPage(buildFeed({ ...x, theme: x.themeFeed }), { width: 1080, height: 1350, out: path.join("out", feedFile) });
     files.push({ kind: "POST", file: feedFile, text: feedCaption(x) });
   }
   console.log("Generado:", files.map((f) => f.file).join(", "), "· tasa", x.cur, "de las", x.hh);

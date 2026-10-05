@@ -5,12 +5,63 @@
   "publishDelayMinutes": 3,
   "keepDays": 3,
   "slots": [
-    { "hour": 8,  "corridor": "BS", "template": "t1" },
-    { "hour": 9,  "corridor": "BS", "template": "t2", "alsoFeed": true },
-    { "hour": 10, "corridor": "BS", "template": "t3" },
-    { "hour": 11, "corridor": "BS", "template": "t1" },
-    { "hour": 12, "corridor": "BS", "template": "t2" },
-    { "hour": 13, "corridor": "PE", "template": "c1" },
-    { "hour": 14, "corridor": "CO", "template": "c1" }
-  ]
+    {
+      "hour": 8,
+      "corridor": "BS",
+      "template": "t1"
+    },
+    {
+      "hour": 9,
+      "corridor": "BS",
+      "template": "t2",
+      "alsoFeed": true
+    },
+    {
+      "hour": 10,
+      "corridor": "BS",
+      "template": "t3"
+    },
+    {
+      "hour": 11,
+      "corridor": "BS",
+      "template": "t1"
+    },
+    {
+      "hour": 12,
+      "corridor": "BS",
+      "template": "t2"
+    },
+    {
+      "hour": 13,
+      "corridor": "PE",
+      "template": "c1"
+    },
+    {
+      "hour": 14,
+      "corridor": "CO",
+      "template": "c1"
+    }
+  ],
+  "themes": {
+    "t1": [
+      "clasico",
+      "mango-solar",
+      "celeste-cielo"
+    ],
+    "t2": [
+      "clasico",
+      "noche-celeste",
+      "perla-editorial"
+    ],
+    "t3": [
+      "clasico"
+    ],
+    "c1": [
+      "clasico"
+    ],
+    "feed": [
+      "violeta-electrico",
+      "blanco-limpio"
+    ]
+  }
 }
