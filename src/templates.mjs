@@ -2,7 +2,7 @@
 // Los colores salen del tema (src/themes.mjs) vía variables CSS: x.theme = clave del tema.
 import { THEMES, themeCSS } from "./themes.mjs";
 
-const f = (n, d = 0) => n.toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d });
+const f = (n, d = 0, max = d) => n.toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: max });
 const themeOf = (x) => THEMES[x.theme] || THEMES.clasico;
 
 export const CORRIDORS = {
@@ -35,8 +35,9 @@ export const flag = (code, size) => {
 const flagsRow = (c, size) =>
   `<span style="display:inline-flex;align-items:center;gap:${Math.round(size * 0.22)}px;vertical-align:middle">${flag("CL", size)}<svg viewBox="0 0 24 24" width="${Math.round(size * 0.5)}" height="${Math.round(size * 0.5)}"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>${flag(c.flag, size)}</span>`;
 
-const rateFmt = (c, v) => (c.base === 1000 ? f(v * 1000, 2) : f(v, 4));
-const unitRate = (c, cur) => (c.base === 1000 ? `1.000 CLP = ${f(cur * 1000, 2)} ${c.unit}` : `1 CLP = ${f(cur, 4)} ${c.unit}`);
+// la tasa se muestra tal como la entrega la API (hasta 6 decimales), sin redondear de más
+const rateFmt = (c, v) => (c.base === 1000 ? f(v * 1000, 2, 5) : f(v, 4, 6));
+const unitRate = (c, cur) => (c.base === 1000 ? `1.000 CLP = ${f(cur * 1000, 2, 5)} ${c.unit}` : `1 CLP = ${f(cur, 4, 6)} ${c.unit}`);
 
 const K = (logo, cls, style) => `<div class="${cls}" style="${style}"><img src="assets/logos/${logo}.png" alt=""></div>`;
 const dot = `<span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:#3CE07A;box-shadow:0 0 0 6px rgba(60,224,122,.25);margin-right:14px;vertical-align:middle"></span>`;
