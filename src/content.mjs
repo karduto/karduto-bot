@@ -8,6 +8,21 @@ const K = (logo, cls, style) => `<div class="${cls}" style="${style}"><img src="
 const ph = (f) => `assets/photos/${f}`;
 const swipe = `<div class="swipe">Desliza <svg viewBox="0 0 24 24"><path d="M8 4l10 8-10 8z"/></svg></div>`;
 const pill = (t, bg = "#FDBB4A", c = "#030357", extra = "") => `<span style="display:inline-block;background:${bg};color:${c};font-weight:800;font-size:36px;padding:18px 38px;border-radius:999px;${extra}">${t}</span>`;
+// Temas: los primarios (morado/azul) siempre mandan; el secundario solo pinta acentos (texto resaltado, botones, números).
+export const THEMES = {
+  mango: { hl: "#FDBB4A", btn: "#FDBB4A", btnInk: "#030357" },
+  celeste: { hl: "#56CBFF", btn: "#56CBFF", btnInk: "#030357" },
+  calabaza: { hl: "#F66220", btn: "#F66220", btnInk: "#FFFFFF" },
+  violeta: { hl: "#56CBFF", btn: "#AE25FD", btnInk: "#FFFFFF" },
+};
+export function applyTheme(html, key = "mango") {
+  const t = THEMES[key];
+  if (!t || key === "mango") return html;
+  let h = html.split("background:#FDBB4A;color:#030357").join(`background:${t.btn};color:${t.btnInk}`)
+    .split("color:#FDBB4A").join(`color:${t.hl}`).split("background:#FDBB4A").join(`background:${t.btn}`).split("#FDBB4A").join(t.hl);
+  const css = `<style>:root{--mango:${t.hl}}.numbadge{background:${t.btn}!important;color:${t.btnInk}!important}.s-cta{background:${t.btn};color:${t.btnInk}}.hl{color:${t.hl}}</style>`;
+  return h.replace("</head>", css + "</head>");
+}
 const FONT = `.kicker,.chip,.h1,.h2,.lead,.body,.tiny,.numbadge{font-family:"Poppins","Arial",sans-serif}`;
 
 function feedPage(inner, extraCss = "") {
@@ -58,7 +73,7 @@ function checkSlide({ photo, pos = "50% 20%", kicker, title, items, cta, ctaSub,
   return feedPage(`
   <div class="bg-grad"></div><div class="dots"></div>
   ${K("iso-white", "k-iso", "top:64px;right:70px;height:100px;")}
-  <img src="${ph(photo)}" style="position:absolute;right:70px;top:150px;width:290px;height:350px;object-fit:cover;object-position:${pos};border-radius:40px;border:8px solid #fff;transform:rotate(4deg);box-shadow:0 20px 50px rgba(0,0,0,.45);">
+  ${photo ? `<img src="${ph(photo)}" style="position:absolute;right:70px;top:150px;width:290px;height:350px;object-fit:cover;object-position:${pos};border-radius:40px;border:8px solid #fff;transform:rotate(4deg);box-shadow:0 20px 50px rgba(0,0,0,.45);">` : ""}
   <div style="position:absolute;left:96px;top:150px;width:600px;"><div class="kicker" style="font-size:26px;">${kicker}</div><div class="h2" style="margin-top:14px;font-size:68px;">${title}</div></div>
   <div style="position:absolute;left:96px;right:96px;top:540px;display:flex;flex-direction:column;gap:14px;">
     ${items.map((t) => `<div style="display:flex;align-items:center;gap:26px;background:rgba(255,255,255,.12);border-radius:30px;padding:18px 30px;"><div style="width:64px;height:64px;min-width:64px;border-radius:18px;background:#FDBB4A;color:#030357;font-weight:800;font-size:44px;display:flex;align-items:center;justify-content:center;">✓</div><div style="font-weight:600;font-size:38px;color:#fff;line-height:1.2;">${t}</div></div>`).join("")}
@@ -68,7 +83,7 @@ function checkSlide({ photo, pos = "50% 20%", kicker, title, items, cta, ctaSub,
 }
 
 // ---------------- piezas de feed de la semana 1 ----------------
-const D02 = (() => {
+export const D02 = (() => {
   const T = 6;
   return [
     coverPhoto({ photo: "f_preocupada_celular.jpg", pos: "50% 30%", chipText: "ANTES DE TRANSFERIR", h1: `4 razones por las que un envío <span class="hl">se detiene</span>`, lead: "Las 4 se evitan antes de transferir." }),
@@ -212,21 +227,23 @@ const FEED_W1 = [
   { date: "2026-10-11", at: "10:00", id: "d07", type: "estatico", slides: [D07] },
 ];
 
+export { K, ph, pill, swipe, feedPage, storyPage, foot, coverPhoto, infoSlide, checkSlide, errCards, sApertura, sUtilidad, sCierre, sCta, sFoot };
+
 async function main() {
   const wanted = process.argv[2] || "semana1";
-  if (wanted !== "semana1") throw new Error("semana desconocida: " + wanted);
-  for (const p of FEED_W1) {
+  const mod = wanted === "semana1" ? { FEED: FEED_W1, STORIES: STORIES_W1 } : await import(`./${wanted}.mjs`);
+  for (const p of mod.FEED) {
     for (const [i, html] of p.slides.entries()) {
       const name = p.slides.length > 1 ? `${p.date}_${p.id}_${p.type}_s${String(i + 1).padStart(2, "0")}.jpg` : `${p.date}_${p.id}_${p.type}.jpg`;
       await renderPage(html, { width: 1080, height: 1350, out: path.join("content", name) });
       console.log(name);
     }
   }
-  for (const s of STORIES_W1) {
+  for (const s of mod.STORIES) {
     const name = `${s.date}_${s.at.replace(":", "")}_story_${s.id}.jpg`;
     await renderPage(s.html, { width: 1080, height: 1920, out: path.join("content", "stories", name) });
     console.log(name, "(" + ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"][wd(s.date)] + ")");
   }
   await closeBrowser();
 }
-main();
+if (process.argv[1] && process.argv[1].endsWith("content.mjs")) main();
