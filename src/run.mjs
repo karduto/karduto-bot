@@ -24,6 +24,8 @@ function nowLocal(ms = Date.now()) {
   return { y: +o.year, mo: +o.month, d: +o.day, h: +o.hour, mi: +o.minute, s: +o.second, date: `${o.year}-${o.month}-${o.day}`, ms: Date.UTC(+o.year, +o.month - 1, +o.day, +o.hour, +o.minute, +o.second) };
 }
 const pad = (n) => String(n).padStart(2, "0");
+// escribe en el log y también en la pantalla "Summary" de la ejecución en GitHub
+const summary = (msg) => { console.log(msg); if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, msg + "\n\n"); };
 const stamp = (t) => `${t.date}T${pad(t.h)}:${pad(t.mi)}:${pad(t.s)}`;
 
 let now = nowLocal();
@@ -93,7 +95,8 @@ async function main() {
     const url = `https://raw.githubusercontent.com/${process.env.GITHUB_REPOSITORY}/${process.env.GITHUB_REF_NAME || "main"}/assets/logos/app-navy.png`;
     const p = await createPost({ imageUrl: url, type: "STORY", when, timezone: TZ, draft: true });
     console.log("Borrador de prueba creado, id:", p.id);
-    if (p.id) { await deletePost(p.id); console.log("Borrador de prueba borrado. El token de Metricool funciona."); }
+    if (p.id) { await deletePost(p.id); summary("✅ CHECK OK: el token de Metricool funciona (se creó un borrador de prueba y se borró)."); }
+    else summary("⚠️ CHECK: Metricool respondió pero no devolvió el id del borrador: " + JSON.stringify(p.raw).slice(0, 300));
     return;
   }
 
@@ -110,10 +113,10 @@ async function main() {
   }
 
   const slotIndex = cfg.slots.findIndex((s) => s.hour === now.h);
-  if (slotIndex < 0) { console.log(`Hora local ${now.h}: no hay publicación programada para esta hora.`); return; }
-  if (!forced && now.mi > cfg.maxLateMinutes) { console.log(`Llegué tarde (minuto ${now.mi}). Salto esta hora para no desordenar.`); return; }
+  if (slotIndex < 0) { summary(`ℹ️ Hora de Chile ${now.date} ${pad(now.h)}:${pad(now.mi)}: no hay publicación programada para esta hora. No se hizo nada.`); return; }
+  if (!forced && now.mi > cfg.maxLateMinutes) { summary(`⏭️ Llegué tarde (minuto ${now.mi}). Salto esta hora para no desordenar.`); return; }
   const slot = cfg.slots[slotIndex];
-  if (!DRY && !process.env.METRICOOL_TOKEN) { console.log("Aún no hay METRICOOL_TOKEN configurado: el bot está en pausa (no genera ni publica nada)."); return; }
+  if (!DRY && !process.env.METRICOOL_TOKEN) { summary("⏸️ Aún no hay METRICOOL_TOKEN configurado: el bot está en pausa (no genera ni publica nada)."); return; }
   const key = `${now.date}_${pad(slot.hour)}`;
   const statePath = "state/published.json";
   const state = fs.existsSync(statePath) ? JSON.parse(fs.readFileSync(statePath, "utf8")) : {};
@@ -139,7 +142,7 @@ async function main() {
     await waitPublic(url);
     const p = await createPost({ imageUrl: url, type: f.kind, when, timezone: TZ, text: f.text || "" });
     result[f.kind.toLowerCase()] = p.id ?? "ok";
-    console.log(`Programado ${f.kind} para ${when}:`, p.id);
+    summary(`✅ Programado ${f.kind} (${slot.corridor}, tasa de las ${x.hh}: ${x.cur}) para ${when} · id Metricool ${p.id}`);
   }
   state[key] = { ...result, at: new Date().toISOString() };
   fs.mkdirSync("state", { recursive: true });
