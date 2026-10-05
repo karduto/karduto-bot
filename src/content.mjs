@@ -58,12 +58,12 @@ function checkSlide({ photo, pos = "50% 20%", kicker, title, items, cta, ctaSub,
   return feedPage(`
   <div class="bg-grad"></div><div class="dots"></div>
   ${K("iso-white", "k-iso", "top:64px;right:70px;height:100px;")}
-  <img src="${ph(photo)}" style="position:absolute;right:70px;top:170px;width:290px;height:360px;object-fit:cover;object-position:${pos};border-radius:40px;border:8px solid #fff;transform:rotate(4deg);box-shadow:0 20px 50px rgba(0,0,0,.45);">
+  <img src="${ph(photo)}" style="position:absolute;right:70px;top:150px;width:290px;height:350px;object-fit:cover;object-position:${pos};border-radius:40px;border:8px solid #fff;transform:rotate(4deg);box-shadow:0 20px 50px rgba(0,0,0,.45);">
   <div style="position:absolute;left:96px;top:150px;width:600px;"><div class="kicker" style="font-size:26px;">${kicker}</div><div class="h2" style="margin-top:14px;font-size:68px;">${title}</div></div>
-  <div style="position:absolute;left:96px;right:96px;top:600px;display:flex;flex-direction:column;gap:22px;">
-    ${items.map((t) => `<div style="display:flex;align-items:center;gap:26px;background:rgba(255,255,255,.12);border-radius:30px;padding:22px 30px;"><div style="width:64px;height:64px;min-width:64px;border-radius:18px;background:#FDBB4A;color:#030357;font-weight:800;font-size:44px;display:flex;align-items:center;justify-content:center;">✓</div><div style="font-weight:600;font-size:38px;color:#fff;line-height:1.2;">${t}</div></div>`).join("")}
+  <div style="position:absolute;left:96px;right:96px;top:540px;display:flex;flex-direction:column;gap:14px;">
+    ${items.map((t) => `<div style="display:flex;align-items:center;gap:26px;background:rgba(255,255,255,.12);border-radius:30px;padding:18px 30px;"><div style="width:64px;height:64px;min-width:64px;border-radius:18px;background:#FDBB4A;color:#030357;font-weight:800;font-size:44px;display:flex;align-items:center;justify-content:center;">✓</div><div style="font-weight:600;font-size:38px;color:#fff;line-height:1.2;">${t}</div></div>`).join("")}
   </div>
-  <div style="position:absolute;left:96px;right:96px;top:${600 + items.length * 128 + 50}px;">${pill(cta)}<div class="tiny" style="margin-top:16px;">${ctaSub}</div></div>
+  <div style="position:absolute;left:96px;right:96px;top:${540 + items.length * 114 + 34}px;">${pill(cta)}<div class="tiny" style="margin-top:16px;">${ctaSub}</div></div>
   <div class="foot"><span>${n} de ${total}</span><span>karduto.com</span></div>`);
 }
 
@@ -71,23 +71,23 @@ function checkSlide({ photo, pos = "50% 20%", kicker, title, items, cta, ctaSub,
 const D02 = (() => {
   const T = 6;
   return [
-    coverPhoto({ photo: "c_mujer_pared.jpg", pos: "50% 25%", chipText: "ANTES DE TRANSFERIR", h1: `4 razones por las que un envío <span class="hl">se detiene</span>`, lead: "Las 4 se evitan antes de transferir." }),
+    coverPhoto({ photo: "f_preocupada_celular.jpg", pos: "50% 30%", chipText: "ANTES DE TRANSFERIR", h1: `4 razones por las que un envío <span class="hl">se detiene</span>`, lead: "Las 4 se evitan antes de transferir." }),
     infoSlide({ n: 1, total: T, title: `Monto que <span class="hl">no coincide</span>`, cards: errCards("Transferir un monto distinto al que indica tu solicitud.", "Revisa que el monto transferido sea exactamente el de tu solicitud.") }),
     infoSlide({ n: 2, total: T, title: `Depósito <span class="hl">no encontrado</span>`, color: "azul", cards: errCards("El pago no aparece en la cuenta de Karduto: transferencia incompleta o hecha a otra cuenta.", "Transfiere a la cuenta que muestra tu solicitud y confirma que tu banco la dejó completada.") }),
     infoSlide({ n: 3, total: T, title: `Comprobante <span class="hl">duplicado</span>`, cards: errCards("Subir el mismo comprobante en más de una solicitud.", "Sube un comprobante distinto por cada envío.") }),
     infoSlide({ n: 4, total: T, title: `Comprobante <span class="hl">no encontrado</span>`, color: "azul", cards: errCards("El archivo no se ve completo o no se puede leer.", "Sube el comprobante completo y legible, en la solicitud que corresponde.") }),
-    checkSlide({ photo: "tasa_hombre_alegre.jpg", pos: "60% 30%", kicker: "Checklist", title: `Antes de <span class="hl">transferir</span>`, items: ["Monto exacto de la solicitud", "Cuenta correcta", "Un comprobante por envío", "Comprobante completo y legible"], cta: "Guárdalo para tu próximo envío", ctaSub: "Cotiza en karduto.com · link en la bio", n: 6, total: 6 }),
+    checkSlide({ photo: "f_hombre_texteando.jpg", pos: "50% 30%", kicker: "Checklist", title: `Antes de <span class="hl">transferir</span>`, items: ["Monto exacto de la solicitud", "Cuenta correcta", "Un comprobante por envío", "Comprobante completo y legible"], cta: "Guárdalo para tu próximo envío", ctaSub: "Cotiza en karduto.com · link en la bio", n: 6, total: 6 }),
   ];
 })();
 
 const D05 = (() => {
   const T = 5;
   return [
-    coverPhoto({ photo: "tasa_sorpresa_amarillo.jpg", pos: "50% 8%", chipText: "REVISA ESTO", h1: `Un número mal escrito y <span class="hl">el pago vuelve</span>`, lead: "Revisa los datos de tu destinatario antes de enviar." , logo: "app-navy"}),
+    coverPhoto({ photo: "f_hombre_error_frente.jpg", pos: "50% 18%", chipText: "REVISA ESTO", h1: `Un número mal escrito y <span class="hl">el pago vuelve</span>`, lead: "Revisa los datos de tu destinatario antes de enviar." , logo: "app-navy"}),
     infoSlide({ n: 1, total: T, title: `Cuenta o <span class="hl">teléfono</span>`, cards: errCards("Un dígito de más, de menos o cambiado.", "Revisa el número completo, dígito por dígito, antes de confirmar.") }),
     infoSlide({ n: 2, total: T, title: `La <span class="hl">cédula</span>`, color: "azul", cards: errCards("Escribirla con un número equivocado o de otra persona.", "Debe ser la del titular de la cuenta que recibe. Compárala con el documento.") }),
     infoSlide({ n: 3, total: T, title: `Límite en cuentas de <span class="hl">ahorro</span>`, cards: errCards("Enviar un monto mayor al límite de abono de la cuenta de ahorro.", "Si el monto es alto, consulta el límite con el banco de destino antes de enviar.") }),
-    checkSlide({ photo: "tasa_mujer_celular.jpg", pos: "50% 22%", kicker: "Regla de 3 pasos", title: `Completa, revisa, <span class="hl">envía</span>`, items: ["Completa todos los datos", "Revisa cuenta o teléfono y cédula", "Envía con calma"], cta: "Guárdalo antes de tu próximo envío", ctaSub: "Cotiza en karduto.com · link en la bio", n: 5, total: 5 }),
+    checkSlide({ photo: "f_mujer_rizos_celular.jpg", pos: "50% 22%", kicker: "Regla de 3 pasos", title: `Completa, revisa, <span class="hl">envía</span>`, items: ["Completa todos los datos", "Revisa cuenta o teléfono y cédula", "Envía con calma"], cta: "Guárdalo antes de tu próximo envío", ctaSub: "Cotiza en karduto.com · link en la bio", n: 5, total: 5 }),
   ];
 })();
 
@@ -99,7 +99,7 @@ const D04 = feedPage(`
     <div class="kicker" style="font-size:26px;color:#FDBB4A;">Chile → Venezuela</div>
     <div class="h2" style="margin-top:16px;font-size:50px;line-height:1.1;">¿Mandas de Chile a Venezuela? Mira cuánto <span class="hl">recibe tu familia</span> antes de transferir.</div>
   </div>
-  <img src="${ph("tasa_mujer_celular.jpg")}" style="position:absolute;left:70px;top:700px;width:300px;height:370px;object-fit:cover;object-position:50% 22%;border-radius:40px;border:8px solid #fff;transform:rotate(-5deg);box-shadow:0 20px 50px rgba(0,0,0,.4);">
+  <img src="${ph("f_mujer_sonrie_celular.jpg")}" style="position:absolute;left:70px;top:700px;width:300px;height:370px;object-fit:cover;object-position:50% 25%;border-radius:40px;border:8px solid #fff;transform:rotate(-5deg);box-shadow:0 20px 50px rgba(0,0,0,.4);">
   <div style="position:absolute;right:70px;top:150px;width:430px;height:900px;border-radius:64px;background:#030357;border:10px solid #0f0f7a;box-shadow:0 30px 70px rgba(0,0,0,.45);transform:rotate(4deg);padding:44px 30px;">
     <div style="display:flex;align-items:center;gap:12px;">${flag("CL", 56)}<span style="color:#fff;font-weight:800;font-size:36px;">→</span>${flag("VE", 56)}</div>
     <div style="color:rgba(255,255,255,.7);font-weight:600;font-size:24px;margin-top:30px;">Tú envías</div>
