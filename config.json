@@ -1,6 +1,6 @@
 {
   "timezone": "America/Santiago",
-  "maxLateMinutes": 45,
+  "storyMaxLateMinutes": 30,
   "maxRateAgeMinutes": 100,
   "publishDelayMinutes": 3,
   "keepDays": 3,

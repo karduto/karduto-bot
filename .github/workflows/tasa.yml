@@ -33,7 +33,7 @@ permissions:
 jobs:
   publicar:
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -54,13 +54,22 @@ jobs:
         if: steps.chk.outputs.go == 'true'
 
       - uses: actions/cache@v4
+        id: pw
         if: steps.chk.outputs.go == 'true'
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ hashFiles('package-lock.json') }}
 
-      - run: npx playwright install --with-deps chromium
-        if: steps.chk.outputs.go == 'true'
+      # Con el navegador en caché NO se baja nada del sistema (el paso con apt-get era el que se colgaba y
+      # cancelaba el run por el límite de tiempo). Sin caché se instala con dependencias, con tope de 3 min y reintentos.
+      - name: Instalar el navegador (solo si no está en caché)
+        if: steps.chk.outputs.go == 'true' && steps.pw.outputs.cache-hit != 'true'
+        run: |
+          for i in 1 2 3; do
+            timeout 180 npx playwright install --with-deps chromium && exit 0
+            echo "intento $i falló, reintento"; sleep 5
+          done
+          exit 1
 
       - name: Identidad de git para guardar las imágenes
         if: steps.chk.outputs.go == 'true'

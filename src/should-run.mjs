@@ -1,22 +1,22 @@
 // should-run.mjs — decide en 1 segundo si esta ejecución tiene algo que hacer (para no instalar nada en vano).
-// Escribe go=true|false en $GITHUB_OUTPUT. Misma lógica de franja/atraso/estado que run.mjs.
+// Escribe go=true|false en $GITHUB_OUTPUT. Usa la misma lógica que run.mjs (plan.mjs).
 import fs from "node:fs";
+import { nowLocal, pad, pendingWork, describe } from "./plan.mjs";
 const cfg = JSON.parse(fs.readFileSync("config.json", "utf8"));
 const manual = process.env.EVENT === "workflow_dispatch";
-const parts = new Intl.DateTimeFormat("en-CA", { timeZone: cfg.timezone, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).formatToParts(new Date());
-const o = Object.fromEntries(parts.map((p) => [p.type, p.value]));
-const h = +o.hour, mi = +o.minute, date = `${o.year}-${o.month}-${o.day}`;
-const slot = cfg.slots.find((s) => s.hour === h);
-const key = `${date}_${String(h).padStart(2, "0")}`;
+const now = nowLocal(cfg.timezone);
 const state = fs.existsSync("state/published.json") ? JSON.parse(fs.readFileSync("state/published.json", "utf8")) : {};
-let go = true, why = "";
+let go = true, why = "", todo = "";
 if (!manual) {
-  if (!slot) { go = false; why = `no hay publicación a las ${h}:00`; }
-  else if (mi > cfg.maxLateMinutes) { go = false; why = `llegué tarde (minuto ${mi})`; }
-  else if (state[key]) { go = false; why = `${key} ya estaba publicada`; }
-  else if (!process.env.METRICOOL_TOKEN) { go = false; why = "falta METRICOOL_TOKEN (bot en pausa)"; }
+  if (!process.env.METRICOOL_TOKEN) { go = false; why = "falta METRICOOL_TOKEN (bot en pausa)"; }
+  else {
+    const work = pendingWork(cfg, state, now);
+    if (!work.length) { go = false; why = `nada pendiente: las historias se publican hasta ${cfg.storyMaxLateMinutes} min después de su hora y el post del día se recupera si falta`; }
+    else todo = work.map(describe).join(", ");
+  }
 }
-const msg = go ? `▶️ Hay trabajo: ${date} ${h}:${String(mi).padStart(2, "0")} (Chile)` : `⏭️ Nada que hacer (${why}). Hora de Chile ${date} ${h}:${String(mi).padStart(2, "0")}`;
+const at = `${now.date} ${now.h}:${pad(now.mi)}`;
+const msg = go ? `▶️ Hay trabajo: ${at} (Chile)${todo ? " → " + todo : ""}` : `⏭️ Nada que hacer (${why}). Hora de Chile ${at}`;
 console.log(msg);
 if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, msg + "\n\n");
 if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `go=${go}\n`);

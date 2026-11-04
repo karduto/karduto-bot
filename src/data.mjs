@@ -1,9 +1,10 @@
 // data.mjs — lee la API pública de tasas de karduto.com y calcula estadísticas de las últimas 24 h
+import { fetchRetry } from "./net.mjs";
 export async function getSeries(from, to) {
   const base = `https://api.karduto.com/api/tasa/listaiden/${from}/${to}`;
   const pages = await Promise.all(
     [1, 2].map(async (p) => {
-      const r = await fetch(`${base}?page=${p}`, { signal: AbortSignal.timeout(20000) });
+      const r = await fetchRetry(`${base}?page=${p}`);
       if (!r.ok) throw new Error(`API de tasas ${from}/${to} página ${p}: HTTP ${r.status}`);
       return r.json();
     })

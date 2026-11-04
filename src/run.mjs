@@ -9,6 +9,8 @@ import { hoursNote, tipFor, COLOMBIA_TIP, disclaimer } from "./info.mjs";
 import { CORRIDORS, buildStory, buildFeed, feedCaption } from "./templates.mjs";
 import { renderPage, closeBrowser } from "./render.mjs";
 import { createPost, deletePost } from "./metricool.mjs";
+import { nowLocal as nowIn, pad, pendingWork, describe, isOpen, storyStatus, feedStatus } from "./plan.mjs";
+import { reason } from "./net.mjs";
 
 const cfg = JSON.parse(fs.readFileSync("config.json", "utf8"));
 const args = Object.fromEntries(process.argv.slice(2).map((a) => { const [k, v] = a.replace(/^--/, "").split("="); return [k, v ?? true]; }));
@@ -18,12 +20,8 @@ const FORCE_DATE = args.date ?? (process.env.FORCE_DATE || undefined);
 const forced = FORCE_HOUR !== undefined || FORCE_DATE !== undefined;
 const TZ = cfg.timezone;
 
-function nowLocal(ms = Date.now()) {
-  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short" }).formatToParts(new Date(ms));
-  const o = Object.fromEntries(parts.map((p) => [p.type, p.value]));
-  return { y: +o.year, mo: +o.month, d: +o.day, h: +o.hour, mi: +o.minute, s: +o.second, date: `${o.year}-${o.month}-${o.day}`, ms: Date.UTC(+o.year, +o.month - 1, +o.day, +o.hour, +o.minute, +o.second) };
-}
-const pad = (n) => String(n).padStart(2, "0");
+const nowLocal = (ms = Date.now()) => nowIn(TZ, ms);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // escribe en el log y también en la pantalla "Summary" de la ejecución en GitHub
 const summary = (msg) => { console.log(msg); if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, msg + "\n\n"); };
 const stamp = (t) => `${t.date}T${pad(t.h)}:${pad(t.mi)}:${pad(t.s)}`;
@@ -64,12 +62,16 @@ async function buildContext(slot, slotIndex) {
 }
 
 const sh = (c) => execSync(c, { stdio: "inherit" });
-function gitPush(message) {
+// GitHub a veces responde "Internal Server Error" al push (pasó el 4 nov): se reintenta con esperas crecientes (~100 s en total)
+const PUSH_WAITS = [0, 3, 8, 15, 30, 45];
+async function gitPush(message) {
   sh("git add -A out state");
   try { execSync("git diff --cached --quiet"); return false; } catch { /* hay cambios */ }
   sh(`git commit -m "${message}"`);
-  for (let i = 0; i < 3; i++) {
-    try { sh("git pull --rebase --autostash"); sh("git push"); return true; } catch (e) { if (i === 2) throw e; }
+  for (let i = 0; i < PUSH_WAITS.length; i++) {
+    if (PUSH_WAITS[i]) await sleep(PUSH_WAITS[i] * 1000);
+    try { sh("git pull --rebase --autostash"); sh("git push"); return true; }
+    catch (e) { console.warn(`⚠️ git push: intento ${i + 1}/${PUSH_WAITS.length} falló`); if (i === PUSH_WAITS.length - 1) throw e; }
   }
 }
 
@@ -114,52 +116,89 @@ async function main() {
     return;
   }
 
-  const slotIndex = cfg.slots.findIndex((s) => s.hour === now.h);
-  if (slotIndex < 0) { summary(`ℹ️ Hora de Chile ${now.date} ${pad(now.h)}:${pad(now.mi)}: no hay publicación programada para esta hora. No se hizo nada.`); return; }
-  if (!forced && now.mi > cfg.maxLateMinutes) { summary(`⏭️ Llegué tarde (minuto ${now.mi}). Salto esta hora para no desordenar.`); return; }
-  const slot = cfg.slots[slotIndex];
   if (!DRY && !process.env.METRICOOL_TOKEN) { summary("⏸️ Aún no hay METRICOOL_TOKEN configurado: el bot está en pausa (no genera ni publica nada)."); return; }
-  const key = `${now.date}_${pad(slot.hour)}`;
   const statePath = "state/published.json";
   const state = fs.existsSync(statePath) ? JSON.parse(fs.readFileSync(statePath, "utf8")) : {};
-  if (state[key] && !DRY) { console.log("Ya publicado:", key); return; }
+  const writeState = () => { fs.mkdirSync("state", { recursive: true }); fs.writeFileSync(statePath, JSON.stringify(state, null, 2)); };
 
-  const x = await buildContext(slot, slotIndex);
-  const storyFile = `${key}_${slot.corridor}_story.jpg`;
-  await renderPage(buildStory(slot.template, x), { width: 1080, height: 1920, out: path.join("out", storyFile) });
-  const files = [{ kind: "STORY", file: storyFile }];
-  if (slot.alsoFeed) {
-    const feedFile = `${key}_${slot.corridor}_feed.jpg`;
-    await renderPage(buildFeed({ ...x, theme: x.themeFeed }), { width: 1080, height: 1350, out: path.join("out", feedFile) });
-    files.push({ kind: "POST", file: feedFile, text: feedCaption(x) });
+  // Qué toca: normal = lo que dicta plan.mjs (historias con tope de atraso, post sin tope) · forzado/--dry = la franja de la hora indicada
+  let todo;
+  if (DRY || forced) {
+    const slotIndex = cfg.slots.findIndex((s) => s.hour === now.h);
+    if (slotIndex < 0) { summary(`ℹ️ Hora de Chile ${now.date} ${pad(now.h)}:${pad(now.mi)}: no hay publicación programada para esta hora. No se hizo nada.`); return; }
+    const slot = cfg.slots[slotIndex], key = `${now.date}_${pad(slot.hour)}`;
+    const w = { slotIndex, slot, key, story: true, feed: !!slot.alsoFeed };
+    if (!DRY) { w.story = isOpen(storyStatus(state, key, Date.now())); w.feed = w.feed && isOpen(feedStatus(state, key, Date.now())); }
+    todo = w.story || w.feed ? [w] : [];
+  } else todo = pendingWork(cfg, state, now);
+  if (!todo.length) { summary(`ℹ️ Hora de Chile ${now.date} ${pad(now.h)}:${pad(now.mi)}: nada pendiente.`); return; }
+  summary(`▶️ Pendiente: ${todo.map(describe).join(", ")}`);
+
+  // 1) Generar las imágenes. Un fallo en una franja (p. ej. la API de tasas caída) no frena a las demás.
+  const failures = [], ready = [];
+  for (const w of todo) {
+    try {
+      const x = await buildContext(w.slot, w.slotIndex);
+      const files = [];
+      if (w.story) {
+        const file = `${w.key}_${w.slot.corridor}_story.jpg`;
+        await renderPage(buildStory(w.slot.template, x), { width: 1080, height: 1920, out: path.join("out", file) });
+        files.push({ kind: "STORY", file, stateKey: w.key });
+      }
+      if (w.feed) {
+        const file = `${w.key}_${w.slot.corridor}_feed.jpg`;
+        await renderPage(buildFeed({ ...x, theme: x.themeFeed }), { width: 1080, height: 1350, out: path.join("out", file) });
+        files.push({ kind: "POST", file, text: feedCaption(x), stateKey: `${w.key}_feed` });
+      }
+      console.log("Generado:", files.map((f) => f.file).join(", "), "· tasa", x.cur, "de las", x.hh);
+      ready.push({ w, x, files });
+    } catch (e) { failures.push(`${describe(w)}: ${e.message}`); console.error(`❌ ${describe(w)}: ${e.message}`); }
   }
-  console.log("Generado:", files.map((f) => f.file).join(", "), "· tasa", x.cur, "de las", x.hh);
-  if (DRY) { console.log("Modo prueba (--dry): no publico nada."); return; }
+  if (DRY) { console.log("Modo prueba (--dry): no publico nada."); if (failures.length) throw new Error(failures.join(" || ")); return; }
 
-  gitPush(`imágenes ${key}`);
-  const when = stamp(nowLocal(Date.now() + cfg.publishDelayMinutes * 60000));
-  const result = {};
-  for (const f of files) {
-    const url = rawUrl(f.file);
-    await waitPublic(url);
-    // Instagram es lo esencial; Facebook y TikTok se intentan aparte para que un fallo no bloquee a Instagram
-    const nets = (cfg.networks?.[f.kind === "STORY" ? "story" : "post"] ?? ["instagram"]);
-    for (const network of nets) {
+  if (ready.length) {
+    // 2) RECLAMAR antes de publicar: el reclamo viaja en el mismo push que las imágenes. Si ese push falla, no se publica nada
+    //    (se reintenta en la próxima ejecución). Si más adelante falla el guardado final, el reclamo evita que otra ejecución duplique.
+    const claimed = new Date().toISOString();
+    for (const r of ready) for (const f of r.files) state[f.stateKey] = { claimed };
+    writeState();
+    await gitPush(`imágenes ${ready.map((r) => r.w.key).join(" ")}`);
+
+    // 3) Programar en Metricool
+    const when = stamp(nowLocal(Date.now() + cfg.publishDelayMinutes * 60000));
+    for (const { w, x, files } of ready) for (const f of files) {
+      const result = {};
       try {
-        const p = await createPost({ imageUrl: url, type: f.kind, when, timezone: TZ, text: f.text || "", network });
-        result[`${f.kind.toLowerCase()}_${network}`] = p.id ?? "ok";
-        summary(`✅ Programado ${f.kind} en ${network} (${slot.corridor}, tasa de las ${x.hh}: ${x.cur}) para ${when} · id Metricool ${p.id}`);
+        const url = rawUrl(f.file);
+        await waitPublic(url);
+        // Instagram es lo esencial; Facebook y TikTok se intentan aparte para que un fallo no bloquee a Instagram
+        const nets = (cfg.networks?.[f.kind === "STORY" ? "story" : "post"] ?? ["instagram"]);
+        for (const network of nets) {
+          try {
+            const p = await createPost({ imageUrl: url, type: f.kind, when, timezone: TZ, text: f.text || "", network });
+            result[`${f.kind.toLowerCase()}_${network}`] = p.id ?? "ok";
+            summary(`✅ Programado ${f.kind} en ${network} (${w.slot.corridor}, tasa de las ${x.hh}: ${x.cur}) para ${when} · id Metricool ${p.id}`);
+          } catch (e) {
+            if (network === "instagram") throw e;
+            summary(`⚠️ ${f.kind} en ${network} no se pudo programar: ${e.message.slice(0, 300)}`);
+          }
+        }
+        state[f.stateKey] = { ...result, at: new Date().toISOString() };
       } catch (e) {
-        if (network === "instagram") throw e;
-        summary(`⚠️ ${f.kind} en ${network} no se pudo programar: ${e.message.slice(0, 300)}`);
+        // Instagram va primero: si falló, no quedó nada programado y se libera el reclamo para reintentar
+        if (Object.keys(result).length) state[f.stateKey] = { ...result, at: new Date().toISOString() }; else delete state[f.stateKey];
+        failures.push(`${describe(w)} (${f.kind}): ${e.message}`);
+        console.error(`❌ ${describe(w)} ${f.kind}: ${e.message}`);
       }
     }
+
+    // 4) Guardar el estado (con reintentos largos)
+    writeState();
+    prune();
+    try { await gitPush(`estado ${ready.map((r) => r.w.key).join(" ")}`); }
+    catch (e) { failures.push(`no pude guardar el estado en GitHub (lo publicado queda protegido por el reclamo): ${reason(e)}`); }
   }
-  state[key] = { ...result, at: new Date().toISOString() };
-  fs.mkdirSync("state", { recursive: true });
-  fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
-  prune();
-  gitPush(`estado ${key}`);
+  if (failures.length) throw new Error(failures.join(" || "));
 }
 
 try { await main(); } catch (e) { console.error("ERROR:", e.message); process.exitCode = 1; } finally { await closeBrowser(); }
