@@ -41,6 +41,9 @@ jobs:
         id: chk
         env:
           EVENT: ${{ github.event_name }}
+          MODO: ${{ inputs.modo || 'publicar' }}
+          FORCE_HOUR: ${{ inputs.hora }}
+          FORCE_DATE: ${{ inputs.fecha }}
           METRICOOL_TOKEN: ${{ secrets.METRICOOL_TOKEN }}
         run: node src/should-run.mjs
 

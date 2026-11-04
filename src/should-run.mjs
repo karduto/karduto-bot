@@ -3,7 +3,9 @@
 import fs from "node:fs";
 import { nowLocal, pad, pendingWork, describe } from "./plan.mjs";
 const cfg = JSON.parse(fs.readFileSync("config.json", "utf8"));
-const manual = process.env.EVENT === "workflow_dispatch";
+// Un disparo externo (modo=publicar, sin hora ni fecha forzadas) se trata como uno programado: sale rápido si no hay nada pendiente.
+// Solo es "manual" (se salta la revisión) si alguien pidió vista previa, check o forzó hora/fecha.
+const manual = process.env.EVENT === "workflow_dispatch" && !(process.env.MODO === "publicar" && !process.env.FORCE_HOUR && !process.env.FORCE_DATE);
 const now = nowLocal(cfg.timezone);
 const state = fs.existsSync("state/published.json") ? JSON.parse(fs.readFileSync("state/published.json", "utf8")) : {};
 let go = true, why = "", todo = "";
