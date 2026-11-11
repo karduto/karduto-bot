@@ -41,25 +41,51 @@ const POSES_CORR = { PE: [V("05-3-peru"), "viajero", "pose-sobre"], CO: [V("05-4
 const W = { "pose-vuelo": 600, "vuelo-mensajero": 520, "pose-saludo": 600, "pose-aprobacion": 600, "pose-celular": 540, "pose-senalando": 600, viajero: 500, "pose-sobre": 600,
   [V("03-4-la-mas-alta-de-24-horas")]: 540, [V("03-6-calculando")]: 540, [V("03-5-comparando")]: 540, [V("05-3-peru")]: 540, [V("05-4-colombia")]: 540 };
 
+// kd rota entre 3 diseños (abajo-derecha, centro, apoyado en la tarjeta) para probar cuál retiene mejor. El diseño se calcula con x.rot, o sea con el día y la franja:
+// (rot + floor(rot/3)) % 3 → 0 = abajo-derecha, 1 = centro, 2 = apoyado. Así se puede saber después qué diseño salió cada día sin guardarlo.
+export const kdLayout = (rot = 0) => ["abajo", "centro", "apoyado"][(Math.abs(rot) + Math.floor(Math.abs(rot) / 3)) % 3];
+
 export function kd(x) {
   const c = x.cor, got = f(x.cur * 10000);
   const high = x.cur >= x.mx - 1e-12, above = x.cur > x.avg;
   const pose = pick(MOOD[high ? "high" : above ? "above" : "neutral"], x.rot ?? 0);
   const note = high ? "▲ La tasa más alta de las últimas 24 h" : above ? "▲ Sobre el promedio de las últimas 24 h" : "";
-  return page(`
-    ${logo}
-    <div class="abs pill" style="right:64px;top:252px;padding:16px 30px;font-size:30px;letter-spacing:.1em"><span class="live"></span>TASA DEL DÍA</div>
-    <div class="abs" style="left:64px;top:372px;display:flex;align-items:center;gap:22px">${flag(c.flag, 76)}<span style="font-size:44px;font-weight:700">${c.label}</span></div>
-    <div class="abs card" style="left:64px;right:64px;top:490px;height:600px;padding:52px 56px">
+  const lay = kdLayout(x.rot ?? 0);
+  const noteHtml = (top) => (note ? `<div class="abs" style="left:64px;top:${top}px"><span class="pill" style="padding:14px 28px;font-size:30px;background:rgba(253,187,74,.2);border-color:#FDBB4A;color:#FDBB4A">${note}</span></div>` : "");
+  const route = `<div class="abs" style="left:64px;top:372px;display:flex;align-items:center;gap:22px">${flag(c.flag, 76)}<span style="font-size:44px;font-weight:700">${c.label}</span></div>`;
+  const pillTop = `<div class="abs pill" style="right:64px;top:252px;padding:16px 30px;font-size:30px;letter-spacing:.1em"><span class="live"></span>TASA DEL DÍA</div>`;
+  const card = (top, h) => `<div class="abs card" style="left:64px;right:64px;top:${top}px;height:${h}px;padding:52px 56px">
       <div style="font-size:38px;font-weight:600;opacity:.9">Si envías</div>
       <div class="h hl" style="font-size:96px;margin-top:2px">10.000 CLP</div>
       <div style="font-size:38px;font-weight:600;opacity:.9;margin-top:20px">tu contacto recibe</div>
       <div class="h" style="font-size:${got.length > 9 ? 112 : 128}px;margin-top:2px">${got} <span style="font-size:60px">${c.unit}</span></div>
-      <div style="margin-top:26px">${spark(x.rates, 900, 110)}</div>
-    </div>
-    ${note ? `<div class="abs" style="left:64px;top:1116px"><span class="pill" style="padding:14px 28px;font-size:30px;background:rgba(253,187,74,.2);border-color:#FDBB4A;color:#FDBB4A">${note}</span></div>` : ""}
+      <div style="margin-top:26px">${spark(x.rates, 900, 110)}</div></div>`;
+  const cta = (left, top) => `<div class="abs" style="left:${left}px;top:${top}px"><span class="btn" style="font-size:38px;padding:26px 46px">COTIZAR AHORA</span></div>`;
+  const foot = (left, top, w, align = "left") => `<div class="abs foot" style="left:${left}px;top:${top}px;width:${w}px;font-size:28px;text-align:${align}">@karduto · karduto.com</div>`;
+  const disc = (left, top, w, align = "left") => `<div class="abs foot" style="left:${left}px;top:${top}px;width:${w}px;font-size:22px;line-height:1.4;text-align:${align}">${x.disclaimer}<br><br><span style="font-size:26px;color:#fff">${x.note}</span></div>`;
+
+  if (lay === "centro") {
+    return page(`
+      ${logo}${pillTop}${route}
+      <img class="mascot" src="${IMG(pose)}" style="left:220px;top:440px;width:640px">
+      <div class="abs card" style="left:64px;right:64px;top:1190px;padding:34px 48px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+        <div><div style="font-size:30px;font-weight:600;opacity:.9">Si envías</div><div class="h hl" style="font-size:62px;margin-top:2px">10.000 CLP</div></div>
+        <div style="font-size:60px;font-weight:800;color:#FDBB4A">→</div>
+        <div style="text-align:right"><div style="font-size:30px;font-weight:600;opacity:.9">tu contacto recibe</div><div class="h" style="font-size:${got.length > 9 ? 56 : 72}px;margin-top:2px">${got} <span style="font-size:36px">${c.unit}</span></div></div></div>
+      ${note ? `<div class="abs" style="left:0;right:0;top:1118px;text-align:center"><span class="pill" style="padding:12px 26px;font-size:28px;background:rgba(253,187,74,.2);border-color:#FDBB4A;color:#FDBB4A">${note}</span></div>` : ""}
+      ${cta(300, 1480)}${disc(90, 1630, 900, "center")}${foot(90, 1800, 900, "center")}`);
+  }
+  if (lay === "apoyado") {
+    return page(`
+      ${logo}${route}
+      <div class="abs pill" style="left:64px;top:480px;padding:16px 30px;font-size:30px;letter-spacing:.1em"><span class="live"></span>TASA DEL DÍA</div>
+      <img class="mascot" src="${IMG(pose)}" style="right:20px;top:350px;width:440px">
+      ${card(800, 600)}${noteHtml(1425)}${cta(64, 1540)}${disc(560, 1530, 460)}${foot(64, 1790, 600)}`);
+  }
+  return page(`
+    ${logo}${pillTop}${route}${card(490, 600)}${noteHtml(1116)}
     <img class="mascot" src="${IMG(pose)}" style="right:${RX(pose, -30)}px;bottom:120px;width:${W[pose]}px">
-    <div class="abs" style="left:64px;top:1260px"><span class="btn" style="font-size:38px;padding:26px 46px">COTIZAR AHORA</span></div>
+    ${cta(64, 1260)}
     <div class="abs foot" style="left:64px;top:1400px;font-size:22px;line-height:1.4;width:430px">${x.disclaimer}</div>
     <div class="abs foot" style="left:64px;top:1560px;font-size:26px;line-height:1.35;width:430px;color:#fff">${x.note}</div>
     <div class="abs foot" style="left:64px;top:1700px;font-size:28px">@karduto · karduto.com</div>`);
