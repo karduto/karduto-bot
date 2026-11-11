@@ -7,6 +7,9 @@ import { execSync } from "node:child_process";
 import { getSeries, ageMinutes } from "./data.mjs";
 import { hoursNote, tipFor, COLOMBIA_TIP, disclaimer } from "./info.mjs";
 import { CORRIDORS, buildStory, buildFeed, feedCaption } from "./templates.mjs";
+import { KARDITO_TEMPLATES } from "./kardito.mjs";
+// plantillas con Kardito (kd, kc) o las de siempre (t1, t2, t3, c1)
+const storyHtml = (key, x) => (KARDITO_TEMPLATES[key] ? KARDITO_TEMPLATES[key](x) : buildStory(key, x));
 import { renderPage, closeBrowser } from "./render.mjs";
 import { createPost, deletePost } from "./metricool.mjs";
 import { nowLocal as nowIn, pad, pendingWork, describe, isOpen, storyStatus, feedStatus } from "./plan.mjs";
@@ -48,12 +51,13 @@ async function buildContext(slot, slotIndex) {
     const age = ageMinutes(data.fecha, now.ms);
     if (age > cfg.maxRateAgeMinutes) throw new Error(`La tasa ${cor.label} tiene ${Math.round(age)} min de antigüedad (límite ${cfg.maxRateAgeMinutes}). No publico para no mostrar una tasa vieja.`);
   }
-  const photos = slot.template === "c1" ? PHOTOS.c1[code] : PHOTOS[slot.template];
+  const photos = (slot.template === "c1" ? PHOTOS.c1[code] : PHOTOS[slot.template]) ?? [""];
   return {
     ...data, cor,
     theme: pick(cfg.themes?.[slot.template] ?? ["clasico"], dayOfYear + slotIndex),
     themeFeed: pick(cfg.themes?.feed ?? ["clasico"], dayOfYear),
     photo: pick(photos, dayOfYear + slotIndex),
+    rot: dayOfYear + slotIndex,
     photoFeed: pick(PHOTOS.t1, dayOfYear),
     tip: tipFor(dayOfYear, slotIndex),
     note: hoursNote(weekday, slot.hour),
@@ -109,7 +113,7 @@ async function main() {
     for (const [i, slot] of cfg.slots.entries()) {
       const x = await buildContext(slot, i);
       const name = `preview/${pad(slot.hour)}_${slot.corridor}_${slot.template}`;
-      await renderPage(buildStory(slot.template, x), { width: 1080, height: 1920, out: `${name}_story.jpg` });
+      await renderPage(storyHtml(slot.template, x), { width: 1080, height: 1920, out: `${name}_story.jpg` });
       if (slot.alsoFeed) await renderPage(buildFeed({ ...x, theme: x.themeFeed }), { width: 1080, height: 1350, out: `${name}_feed.jpg` });
       console.log("preview", name);
     }
@@ -142,7 +146,7 @@ async function main() {
       const files = [];
       if (w.story) {
         const file = `${w.key}_${w.slot.corridor}_story.jpg`;
-        await renderPage(buildStory(w.slot.template, x), { width: 1080, height: 1920, out: path.join("out", file) });
+        await renderPage(storyHtml(w.slot.template, x), { width: 1080, height: 1920, out: path.join("out", file) });
         files.push({ kind: "STORY", file, stateKey: w.key });
       }
       if (w.feed) {

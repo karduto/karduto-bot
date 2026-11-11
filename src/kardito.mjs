@@ -1,0 +1,80 @@
+// kardito.mjs — historias de tasa con Kardito (1080x1920), páginas completas con su propio estilo.
+//  kd = tasa con curva de 24 h (Kardito reacciona a la posición de la tasa)   kc = captación por corredor (Perú, Colombia)
+// Usa solo datos reales del bot (x.cur, x.mx, x.avg, x.rates, x.hh) y mantiene el aviso de tasa y el horario obligatorios.
+import { flag } from "./templates.mjs";
+
+const f = (n, d = 2) => n.toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d });
+const pick = (arr, n) => arr[Math.abs(n) % arr.length];
+const IMG = (n) => `assets/kardito/${n}.webp`;
+const FONTS = [[500, "Poppins-Medium"], [600, "Poppins-SemiBold"], [700, "Poppins-Bold"], [800, "Poppins-ExtraBold"]]
+  .map(([w, n]) => `@font-face{font-family:"Poppins";font-weight:${w};src:url("assets/fonts/${n}.ttf")}`).join("");
+const CSS = `${FONTS}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;font-family:"Poppins","Arial",sans-serif;color:#fff;overflow:hidden;position:relative}
+.bg{position:absolute;inset:0;background:radial-gradient(1000px 760px at 88% 6%,#7d5fff 0%,rgba(125,95,255,0) 62%),linear-gradient(162deg,#4A37FE 0%,#2b20c4 36%,#030357 100%)}
+.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.085) 2.2px,transparent 2.8px);background-size:46px 46px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 75%)}
+.abs{position:absolute}.h{font-weight:800;letter-spacing:-.02em;line-height:1.03}.hl{color:#FDBB4A}
+.mascot{position:absolute;filter:drop-shadow(0 30px 40px rgba(3,3,87,.5))}
+.btn{display:inline-block;background:#FDBB4A;color:#030357;font-weight:800;border-radius:999px;white-space:nowrap}
+.card{background:rgba(255,255,255,.11);border:2px solid rgba(255,255,255,.2);border-radius:48px}
+.pill{display:inline-flex;align-items:center;gap:14px;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.22);border-radius:999px;font-weight:700}
+.live{width:16px;height:16px;border-radius:50%;background:#FDBB4A;box-shadow:0 0 0 7px rgba(253,187,74,.3)}
+.foot{font-weight:600;color:rgba(255,255,255,.78)}`;
+const page = (body) => `<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=1080,height=1920"><style>${CSS}</style></head><body><div class="bg"></div><div class="dots"></div>${body}</body></html>`;
+const logo = `<img class="abs" src="assets/logos/iso-white.png" style="top:236px;left:64px;height:88px">`;
+
+const spark = (rates, w, h) => {
+  const mn = Math.min(...rates), mx = Math.max(...rates), r = mx - mn || 1;
+  const pts = rates.map((v, i) => `${(i / (rates.length - 1)) * w},${h - 14 - ((v - mn) / r) * (h - 28)}`);
+  const last = pts[pts.length - 1].split(",");
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts.join(" ")}" fill="none" stroke="#FDBB4A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${last[0]}" cy="${last[1]}" r="12" fill="#fff" stroke="#FDBB4A" stroke-width="6"/></svg>`;
+};
+
+// Poses por situación; rotan por día y franja para que no se repita siempre la misma
+const MOOD = { high: ["pose-vuelo", "vuelo-mensajero"], above: ["pose-saludo", "pose-aprobacion"], neutral: ["pose-celular", "pose-senalando"] };
+const POSES_CORR = { PE: ["viajero", "pose-sobre"], CO: ["vuelo-mensajero", "pose-sobre"] };
+// Ancho por pose (px): así ninguna pose invade la columna de texto de la izquierda (x < 500)
+const W = { "pose-vuelo": 600, "vuelo-mensajero": 520, "pose-saludo": 600, "pose-aprobacion": 600, "pose-celular": 540, "pose-senalando": 600, viajero: 500, "pose-sobre": 600 };
+
+export function kd(x) {
+  const c = x.cor, got = f(x.cur * 10000);
+  const high = x.cur >= x.mx - 1e-12, above = x.cur > x.avg;
+  const pose = pick(MOOD[high ? "high" : above ? "above" : "neutral"], x.rot ?? 0);
+  const note = high ? "▲ La tasa más alta de las últimas 24 h" : above ? "▲ Sobre el promedio de las últimas 24 h" : "";
+  return page(`
+    ${logo}
+    <div class="abs pill" style="right:64px;top:252px;padding:16px 30px;font-size:30px;letter-spacing:.1em"><span class="live"></span>TASA DEL DÍA</div>
+    <div class="abs" style="left:64px;top:372px;display:flex;align-items:center;gap:22px">${flag(c.flag, 76)}<span style="font-size:44px;font-weight:700">${c.label}</span></div>
+    <div class="abs card" style="left:64px;right:64px;top:490px;height:600px;padding:52px 56px">
+      <div style="font-size:38px;font-weight:600;opacity:.9">Si envías</div>
+      <div class="h hl" style="font-size:96px;margin-top:2px">10.000 CLP</div>
+      <div style="font-size:38px;font-weight:600;opacity:.9;margin-top:20px">tu contacto recibe</div>
+      <div class="h" style="font-size:${got.length > 9 ? 112 : 128}px;margin-top:2px">${got} <span style="font-size:60px">${c.unit}</span></div>
+      <div style="margin-top:26px">${spark(x.rates, 900, 110)}</div>
+    </div>
+    ${note ? `<div class="abs" style="left:64px;top:1116px"><span class="pill" style="padding:14px 28px;font-size:30px;background:rgba(253,187,74,.2);border-color:#FDBB4A;color:#FDBB4A">${note}</span></div>` : ""}
+    <img class="mascot" src="${IMG(pose)}" style="right:-30px;bottom:120px;width:${W[pose]}px">
+    <div class="abs" style="left:64px;top:1260px"><span class="btn" style="font-size:38px;padding:26px 46px">COTIZAR AHORA</span></div>
+    <div class="abs foot" style="left:64px;top:1400px;font-size:22px;line-height:1.4;width:430px">${x.disclaimer}</div>
+    <div class="abs foot" style="left:64px;top:1560px;font-size:26px;line-height:1.35;width:430px;color:#fff">${x.note}</div>
+    <div class="abs foot" style="left:64px;top:1700px;font-size:28px">@karduto · karduto.com</div>`);
+}
+
+export function kc(x) {
+  const c = x.cor, got = f(x.cur * 10000);
+  const sub = x.cor.tipFixed ? x.cor.tipFixed.charAt(0).toUpperCase() + x.cor.tipFixed.slice(1) : `Envía a ${c.short} desde tu celular.`;
+  const pose = pick(POSES_CORR[c.flag] ?? POSES_CORR.PE, x.rot ?? 0);
+  return page(`
+    ${logo}
+    <div class="abs" style="right:64px;top:240px">${flag(c.flag, 120)}</div>
+    <div class="abs" style="left:64px;right:64px;top:420px"><div class="h" style="font-size:96px">¿TU FAMILIA</div><div class="h hl" style="font-size:96px;margin-top:4px">ESTÁ EN ${c.short.toUpperCase()}?</div>
+    <div style="font-size:42px;font-weight:600;margin-top:34px;line-height:1.3;width:800px">${sub}</div></div>
+    <img class="mascot" src="${IMG(pose)}" style="right:-50px;bottom:150px;width:${W[pose]}px">
+    <div class="abs card" style="left:64px;top:1010px;width:430px;padding:28px 32px"><div style="font-size:25px;font-weight:600;opacity:.9">Con la tasa de las ${x.hh}</div><div class="h hl" style="font-size:40px;margin-top:10px">10.000 CLP</div><div class="h" style="font-size:44px;margin-top:4px">→ ${got} ${c.unit}</div></div>
+    <div class="abs" style="left:64px;top:1330px"><span class="btn" style="font-size:38px;padding:26px 46px">COTIZAR AHORA</span></div>
+    <div class="abs foot" style="left:64px;top:1470px;font-size:22px;line-height:1.4;width:430px">${x.disclaimer}</div>
+    <div class="abs foot" style="left:64px;top:1650px;font-size:26px;line-height:1.35;width:430px;color:#fff">${x.note}</div>
+    <div class="abs foot" style="left:64px;top:1770px;font-size:28px">@karduto · karduto.com</div>`);
+}
+
+export const KARDITO_TEMPLATES = { kd, kc };

@@ -8,7 +8,7 @@
     {
       "hour": 8,
       "corridor": "BS",
-      "template": "t1"
+      "template": "kd"
     },
     {
       "hour": 9,
@@ -24,7 +24,7 @@
     {
       "hour": 11,
       "corridor": "BS",
-      "template": "t1"
+      "template": "kd"
     },
     {
       "hour": 12,
@@ -34,12 +34,12 @@
     {
       "hour": 13,
       "corridor": "PE",
-      "template": "c1"
+      "template": "kc"
     },
     {
       "hour": 14,
       "corridor": "CO",
-      "template": "c1"
+      "template": "kc"
     }
   ],
   "themes": {
