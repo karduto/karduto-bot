@@ -31,10 +31,15 @@ const spark = (rates, w, h) => {
 };
 
 // Poses por situación; rotan por día y franja para que no se repita siempre la misma
-const MOOD = { high: ["pose-vuelo", "vuelo-mensajero"], above: ["pose-saludo", "pose-aprobacion"], neutral: ["pose-celular", "pose-senalando"] };
-const POSES_CORR = { PE: ["viajero", "pose-sobre"], CO: ["vuelo-mensajero", "pose-sobre"] };
+// Las "variantes/…" salen de las hojas de Lovart (assets/kardito/variantes): 03-4 copa = «la más alta de 24 h», 03-5 lupa y 03-6 calculadora = tasa normal, 05-3 y 05-4 = bandera del corredor
+const V = (n) => `variantes/${n}`;
+// Las variantes traen objetos (bandera, copa, calculadora) que sobresalen del cuerpo: se ponen dentro del borde y no cortadas como las poses antiguas
+const RX = (pose, dflt) => (pose.startsWith("variantes/") ? 24 : dflt);
+const MOOD = { high: ["pose-vuelo", V("03-4-la-mas-alta-de-24-horas"), "vuelo-mensajero"], above: ["pose-saludo", "pose-aprobacion"], neutral: ["pose-celular", V("03-6-calculando"), "pose-senalando", V("03-5-comparando")] };
+const POSES_CORR = { PE: [V("05-3-peru"), "viajero", "pose-sobre"], CO: [V("05-4-colombia"), "vuelo-mensajero", "pose-sobre"] };
 // Ancho por pose (px): así ninguna pose invade la columna de texto de la izquierda (x < 500)
-const W = { "pose-vuelo": 600, "vuelo-mensajero": 520, "pose-saludo": 600, "pose-aprobacion": 600, "pose-celular": 540, "pose-senalando": 600, viajero: 500, "pose-sobre": 600 };
+const W = { "pose-vuelo": 600, "vuelo-mensajero": 520, "pose-saludo": 600, "pose-aprobacion": 600, "pose-celular": 540, "pose-senalando": 600, viajero: 500, "pose-sobre": 600,
+  [V("03-4-la-mas-alta-de-24-horas")]: 540, [V("03-6-calculando")]: 540, [V("03-5-comparando")]: 540, [V("05-3-peru")]: 540, [V("05-4-colombia")]: 540 };
 
 export function kd(x) {
   const c = x.cor, got = f(x.cur * 10000);
@@ -53,7 +58,7 @@ export function kd(x) {
       <div style="margin-top:26px">${spark(x.rates, 900, 110)}</div>
     </div>
     ${note ? `<div class="abs" style="left:64px;top:1116px"><span class="pill" style="padding:14px 28px;font-size:30px;background:rgba(253,187,74,.2);border-color:#FDBB4A;color:#FDBB4A">${note}</span></div>` : ""}
-    <img class="mascot" src="${IMG(pose)}" style="right:-30px;bottom:120px;width:${W[pose]}px">
+    <img class="mascot" src="${IMG(pose)}" style="right:${RX(pose, -30)}px;bottom:120px;width:${W[pose]}px">
     <div class="abs" style="left:64px;top:1260px"><span class="btn" style="font-size:38px;padding:26px 46px">COTIZAR AHORA</span></div>
     <div class="abs foot" style="left:64px;top:1400px;font-size:22px;line-height:1.4;width:430px">${x.disclaimer}</div>
     <div class="abs foot" style="left:64px;top:1560px;font-size:26px;line-height:1.35;width:430px;color:#fff">${x.note}</div>
@@ -69,7 +74,7 @@ export function kc(x) {
     <div class="abs" style="right:64px;top:240px">${flag(c.flag, 120)}</div>
     <div class="abs" style="left:64px;right:64px;top:420px"><div class="h" style="font-size:96px">¿TU FAMILIA</div><div class="h hl" style="font-size:96px;margin-top:4px">ESTÁ EN ${c.short.toUpperCase()}?</div>
     <div style="font-size:42px;font-weight:600;margin-top:34px;line-height:1.3;width:800px">${sub}</div></div>
-    <img class="mascot" src="${IMG(pose)}" style="right:-50px;bottom:150px;width:${W[pose]}px">
+    <img class="mascot" src="${IMG(pose)}" style="right:${RX(pose, -50)}px;bottom:150px;width:${W[pose]}px">
     <div class="abs card" style="left:64px;top:1010px;width:430px;padding:28px 32px"><div style="font-size:25px;font-weight:600;opacity:.9">Con la tasa de las ${x.hh}</div><div class="h hl" style="font-size:40px;margin-top:10px">10.000 CLP</div><div class="h" style="font-size:44px;margin-top:4px">→ ${got} ${c.unit}</div></div>
     <div class="abs" style="left:64px;top:1330px"><span class="btn" style="font-size:38px;padding:26px 46px">COTIZAR AHORA</span></div>
     <div class="abs foot" style="left:64px;top:1470px;font-size:22px;line-height:1.4;width:430px">${x.disclaimer}</div>
